@@ -1,0 +1,46 @@
+[
+  {
+    "slug": "nala",
+    "title": "Nala",
+    "description": "An AI health coaching chatbot with a RAG pipeline, mobile app, and a coauthored CHI 2026 publication.",
+    "longDescription": "Nala is an intelligent health coaching assistant that guides users through a structured 4-week wellness program for stress management and habit building. It combines conversational AI with evidence-based coaching via a three-layer architecture: a React Native mobile frontend, a FastAPI backend with SQLAlchemy and PostgreSQL, and a RAG (Retrieval-Augmented Generation) pipeline that retrieves relevant coaching examples from a pgvector database before generating contextually appropriate responses through Claude or GPT. Currently under active maintenance with a coauthored publication submitted to CHI 2026.",
+    "tags": ["Python", "React Native", "FastAPI", "RAG", "PostgreSQL", "pgvector"],
+    "github": "https://github.com/taiyyoson/nala",
+    "live": null,
+    "image": null,
+    "featured": true
+  },
+  {
+    "slug": "particle-simulator",
+    "title": "Particle Simulator",
+    "description": "A 2D particle physics simulation with real-time rendering, gravity, springs, and interactive controls.",
+    "longDescription": "A 2D particle physics simulation built with Spring Boot and JavaFX. The physics engine uses Dyn4j for gravitational forces, collision detection, and spring constraints. Users can create, drag, and manipulate particles in real time with configurable physics parameters, pause/resume controls, and preset scenarios. The backend persists experiments to MongoDB with auto-save snapshots every 5 seconds via a parallel ScheduledExecutorService, fully containerized with Docker and Colima.",
+    "tags": ["Java", "Spring Boot", "JavaFX", "MongoDB", "Docker"],
+    "github": "https://github.com/taiyyoson/particle-simulator",
+    "live": null,
+    "image": null,
+    "featured": true
+  },
+  {
+    "slug": "network-compression-detector",
+    "title": "Network Compression Detector",
+    "description": "A C socket programming tool that detects compression on network paths using entropy-based UDP probing.",
+    "longDescription": "Two companion applications — a client-server pair and a standalone tool — that detect compression links on network paths with 100% accuracy. The server initiates a TCP connection and sends high and low entropy UDP payload trains for the client to receive and analyze. Built and tested across UTM virtual machines running Ubuntu Linux, with packet transactions verified through Wireshark. Also replicated and benchmarked in Golang for performance comparison.",
+    "tags": ["C", "Golang", "Socket Programming", "Networking", "Linux"],
+    "github": "https://github.com/taiyyoson/network-compression-detection-general",
+    "live": null,
+    "image": null,
+    "featured": false
+  },
+  {
+    "slug": "chore-mate",
+    "title": "ChoreMate",
+    "description": "A gamified collaborative chore management app where completing tasks keeps a shared virtual pet healthy.",
+    "longDescription": "ChoreMate (ChorePet) is a collaborative household task management app that gamifies chore completion through virtual pet mechanics. Completing assigned chores earns points toward a shared digital pet's health — the pet visually reacts based on its wellbeing, from happy animations above 90% to critical distress below 20%. Features automated task distribution based on individual capacity, configurable difficulty ratings, and completion frequency tracking. Built as a full-stack team project with a deployed web frontend.",
+    "tags": ["JavaScript", "React", "Node.js", "Full-Stack"],
+    "github": "https://github.com/taiyyoson/chore-mate",
+    "live": null,
+    "image": null,
+    "featured": false
+  }
+]

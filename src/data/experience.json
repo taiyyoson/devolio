@@ -1,0 +1,56 @@
+[
+  {
+    "role": "Research Assistant",
+    "company": "University of San Francisco",
+    "location": "San Francisco, CA",
+    "startDate": "2026-02",
+    "endDate": null,
+    "description": "Continuing maintenance on the Nala health coaching project and beginning a master's thesis. Exploring cloud and systems research directions.",
+    "tags": ["Research", "Python", "Cloud", "Systems"]
+  },
+  {
+    "role": "CS Tutor & Teaching Assistant",
+    "company": "University of San Francisco",
+    "location": "San Francisco, CA",
+    "startDate": "2025-01",
+    "endDate": null,
+    "description": "Tutoring students in debugging, project management, and exam prep. Hosting workshops on SSH and Git basics, developing lesson plans and coding exercises to reinforce core CS concepts.",
+    "tags": ["Teaching", "Git", "Debugging"]
+  },
+  {
+    "role": "Founding Executive Director",
+    "company": "Hack4Impact USF",
+    "location": "San Francisco, CA",
+    "startDate": "2024-01",
+    "endDate": null,
+    "description": "Founded the university's 3rd CS club, mimicking a professional environment to give students real-world exposure. Teaching a React/Next.js/AWS stack to build software for local nonprofits. Conducting research on nonprofit tech utilization with a focus on AI applications in gerrymandering.",
+    "tags": ["React", "Next.js", "AWS", "Leadership"]
+  },
+  {
+    "role": "Embedded Software Engineering Intern",
+    "company": "Fastly",
+    "location": "San Francisco, CA",
+    "startDate": "2025-05",
+    "endDate": "2025-08",
+    "description": "Collaborated with the Embedded Fastly team to optimize, scale, and test virtual CDN servers. Developed a Go-based API cache testing tool that integrates with cache nodes across deployment types, testing compute and observability components. Integrated the product into Fastly's CI/CD pipeline on a private Kubernetes cluster and built a Helm chart for deployment.",
+    "tags": ["Golang", "Kubernetes", "Helm", "CI/CD", "Docker"]
+  },
+  {
+    "role": "Software Developer Intern",
+    "company": "Pacxa",
+    "location": "Honolulu, HI",
+    "startDate": "2024-06",
+    "endDate": "2024-08",
+    "description": "Built a talent and certification management tool with Microsoft Power Apps. Developed Power Automate flows to automate email notifications and Excel operations, reducing manual labor by 80%. Implemented security access control for 50+ employees and created app flowcharts, database schemas, and documentation.",
+    "tags": ["Power Apps", "Power Automate", "Office 365"]
+  },
+  {
+    "role": "B.S. Computer Science / M.S. Computer Science (4+1)",
+    "company": "University of San Francisco",
+    "location": "San Francisco, CA",
+    "startDate": "2022-08",
+    "endDate": "2027-05",
+    "description": "B.S. GPA: 3.64, M.S. GPA: 4.0. Coursework includes Data Structures & Algorithms, C & Systems Programming, Full-Stack Web Dev, Foundations of AI & ML, AI Redistricting, Computer Networks, and Software Development.",
+    "tags": ["AI/ML", "Systems", "Full-Stack", "Algorithms"]
+  }
+]
