@@ -5,6 +5,7 @@ import TerminalLine from "./terminal/TerminalLine";
 import TerminalInput from "./terminal/TerminalInput";
 import { buildFileSystem } from "@/lib/filesystem";
 import { executeCommand } from "@/lib/commands";
+import { createClient } from "@/lib/supabase/client";
 
 const fileSystem = buildFileSystem();
 
@@ -47,16 +48,16 @@ function reducer(state, action) {
       }
 
       if (state.loginMode === "password") {
-        // For now, login is a stub — Supabase integration comes in Phase 6
         return {
           ...state,
           history: [
             ...state.history,
             { type: "output", content: "password: " + "*".repeat(input.length) },
-            { type: "error", content: "Authentication not yet configured. Supabase integration pending." },
+            { type: "system", content: "Authenticating..." },
           ],
           currentInput: "",
           loginMode: null,
+          _pendingLogin: { email: state.loginEmail, password: input },
           loginEmail: "",
         };
       }
@@ -95,7 +96,20 @@ function reducer(state, action) {
     }
 
     case "CLEAR_SIDE_EFFECTS":
-      return { ...state, _pendingOpen: undefined, _pendingTheme: undefined };
+      return { ...state, _pendingOpen: undefined, _pendingTheme: undefined, _pendingLogin: undefined };
+
+    case "LOGIN_SUCCESS":
+      return {
+        ...state,
+        isAuthenticated: true,
+        history: [...state.history, { type: "system", content: "Authenticated as admin." }],
+      };
+
+    case "LOGIN_FAILURE":
+      return {
+        ...state,
+        history: [...state.history, { type: "error", content: `Authentication failed: ${action.message}` }],
+      };
 
     case "SET_AUTH":
       return { ...state, isAuthenticated: action.value };
@@ -119,7 +133,15 @@ export default function Terminal() {
     }
   }, [state.history]);
 
-  // Handle side effects (open URL, toggle theme)
+  // Check existing session on mount
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) dispatch({ type: "SET_AUTH", value: true });
+    });
+  }, []);
+
+  // Handle side effects (open URL, toggle theme, login)
   useEffect(() => {
     if (state._pendingOpen) {
       window.open(state._pendingOpen, "_blank");
@@ -131,7 +153,19 @@ export default function Terminal() {
       localStorage.setItem("theme", isDark ? "dark" : "light");
       dispatch({ type: "CLEAR_SIDE_EFFECTS" });
     }
-  }, [state._pendingOpen, state._pendingTheme]);
+    if (state._pendingLogin) {
+      const { email, password } = state._pendingLogin;
+      dispatch({ type: "CLEAR_SIDE_EFFECTS" });
+      const supabase = createClient();
+      supabase.auth.signInWithPassword({ email, password }).then(({ error }) => {
+        if (error) {
+          dispatch({ type: "LOGIN_FAILURE", message: error.message });
+        } else {
+          dispatch({ type: "LOGIN_SUCCESS" });
+        }
+      });
+    }
+  }, [state._pendingOpen, state._pendingTheme, state._pendingLogin]);
 
   const handleSubmit = useCallback(() => {
     dispatch({ type: "SUBMIT" });
