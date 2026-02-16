@@ -6,6 +6,7 @@ import TerminalInput from "./terminal/TerminalInput";
 import { buildFileSystem } from "@/lib/filesystem";
 import { executeCommand } from "@/lib/commands";
 import { createClient } from "@/lib/supabase/client";
+import KanbanOverlay from "./kanban/KanbanOverlay";
 
 const fileSystem = buildFileSystem();
 
@@ -209,6 +210,10 @@ export default function Terminal() {
           />
         </div>
       </div>
+
+      {state.showKanban && (
+        <KanbanOverlay onClose={() => dispatch({ type: "TOGGLE_KANBAN" })} />
+      )}
     </div>
   );
 }
