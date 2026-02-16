@@ -4,6 +4,11 @@ import { NextResponse } from "next/server";
 export async function middleware(request) {
   let supabaseResponse = NextResponse.next({ request });
 
+  // Skip Supabase session refresh if env vars aren't set
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return supabaseResponse;
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,

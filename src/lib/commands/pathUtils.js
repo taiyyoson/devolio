@@ -9,12 +9,8 @@ export function resolvePath(cwd, target) {
   if (target.startsWith("~/")) {
     // Absolute path from home
     parts = target.slice(2).split("/").filter(Boolean);
-  } else if (target === "..") {
-    parts = cwd.split("/").filter(Boolean);
-    parts.pop();
-    if (parts.length === 0) return "~";
   } else if (target.startsWith("..")) {
-    parts = cwd.split("/").filter(Boolean);
+    parts = cwd === "~" ? [] : cwd.slice(2).split("/").filter(Boolean);
     const segments = target.split("/").filter(Boolean);
     for (const seg of segments) {
       if (seg === "..") {
@@ -23,7 +19,6 @@ export function resolvePath(cwd, target) {
         parts.push(seg);
       }
     }
-    if (parts.length === 0 || (parts.length === 1 && parts[0] === "~")) return "~";
   } else {
     // Relative path
     parts = cwd === "~" ? [] : cwd.slice(2).split("/").filter(Boolean);

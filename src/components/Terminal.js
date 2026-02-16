@@ -137,6 +137,7 @@ export default function Terminal() {
   // Check existing session on mount
   useEffect(() => {
     const supabase = createClient();
+    if (!supabase) return;
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) dispatch({ type: "SET_AUTH", value: true });
     });
@@ -158,6 +159,10 @@ export default function Terminal() {
       const { email, password } = state._pendingLogin;
       dispatch({ type: "CLEAR_SIDE_EFFECTS" });
       const supabase = createClient();
+      if (!supabase) {
+        dispatch({ type: "LOGIN_FAILURE", message: "Supabase not configured" });
+        return;
+      }
       supabase.auth.signInWithPassword({ email, password }).then(({ error }) => {
         if (error) {
           dispatch({ type: "LOGIN_FAILURE", message: error.message });
