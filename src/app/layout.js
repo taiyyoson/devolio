@@ -23,7 +23,7 @@ export const metadata = {
     type: "website",
     locale: "en_US",
   },
-  metadataBase: new URL("https://devolio.dev"),
+  metadataBase: new URL("https://taiyyoson.com"),
 };
 
 export default function RootLayout({ children }) {
