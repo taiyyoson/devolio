@@ -121,6 +121,16 @@ function reducer(state, action) {
     case "SET_AUTH":
       return { ...state, isAuthenticated: action.value };
 
+    case "SHOW_COMPLETIONS":
+      return {
+        ...state,
+        history: [
+          ...state.history,
+          { type: "prompt", cwd: state.cwd, content: state.currentInput },
+          { type: "output", content: action.matches.join("  ") },
+        ],
+      };
+
     case "TOGGLE_KANBAN":
       return { ...state, showKanban: !state.showKanban };
 
@@ -191,6 +201,10 @@ export default function Terminal({ onToggleView }) {
     dispatch({ type: "SET_INPUT", value });
   }, []);
 
+  const handleShowCompletions = useCallback((matches) => {
+    dispatch({ type: "SHOW_COMPLETIONS", matches });
+  }, []);
+
   return (
     <div className="h-screen w-screen bg-[#0a0a0a] text-sm font-mono flex flex-col overflow-hidden">
       <div
@@ -205,6 +219,7 @@ export default function Terminal({ onToggleView }) {
           value={state.currentInput}
           onChange={handleChange}
           onSubmit={handleSubmit}
+          onShowCompletions={handleShowCompletions}
           loginMode={state.loginMode}
           commands={commandNames}
           fileSystem={fileSystem}
