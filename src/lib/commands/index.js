@@ -10,6 +10,10 @@ import { theme } from "./theme";
 import { gui } from "./gui";
 import { kanban } from "./kanban";
 import { login } from "./login";
+import { echo } from "./echo";
+import { pwd } from "./pwd";
+import { date } from "./date";
+import { history } from "./history";
 
 const commands = {
   help,
@@ -21,9 +25,15 @@ const commands = {
   open,
   theme,
   gui,
+  echo,
+  pwd,
+  date,
+  history,
   "/kanban": kanban,
   "/login": login,
 };
+
+export const commandNames = Object.keys(commands);
 
 /**
  * Execute a raw input string against the command registry.
