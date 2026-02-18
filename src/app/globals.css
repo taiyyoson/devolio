@@ -44,6 +44,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -76,4 +80,14 @@ body {
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Portfolio fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.portfolio-fade-in {
+  animation: fadeIn 0.3s ease-out;
 }
