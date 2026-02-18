@@ -12,6 +12,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
+  icons: {
+    icon: "/favicon.svg",
+  },
   title: {
     default: "devolio — Developer Portfolio",
     template: "%s — devolio",
