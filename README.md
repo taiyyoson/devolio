@@ -1,6 +1,6 @@
 # devolio
 
-=======
+
 terminal-style developer portfolio. type commands to navigate projects, experience, and publications like a filesystem.
 
 ```
