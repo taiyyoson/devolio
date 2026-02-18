@@ -7,6 +7,7 @@ import { clear } from "./clear";
 import { whoami } from "./whoami";
 import { open } from "./open";
 import { theme } from "./theme";
+import { gui } from "./gui";
 import { kanban } from "./kanban";
 import { login } from "./login";
 
@@ -19,6 +20,7 @@ const commands = {
   whoami,
   open,
   theme,
+  gui,
   "/kanban": kanban,
   "/login": login,
 };

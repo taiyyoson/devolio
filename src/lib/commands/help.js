@@ -11,6 +11,7 @@ export function help() {
       { type: "output", content: "  whoami            Display user info" },
       { type: "output", content: "  open <url>        Open a URL in a new tab" },
       { type: "output", content: "  theme             Toggle dark/light mode" },
+      { type: "output", content: "  gui               Switch to traditional portfolio view" },
       { type: "output", content: "  /login            Admin login" },
       { type: "output", content: "  /kanban           Open kanban board (admin only)" },
     ],
