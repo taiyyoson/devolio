@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { resolvePath, getNode } from "@/lib/commands/pathUtils";
 
 const PATH_COMMANDS = new Set(["cd", "ls", "cat", "open"]);
@@ -77,21 +77,18 @@ export default function TerminalInput({
   commandHistory = [],
 }) {
   const inputRef = useRef(null);
-  const [historyIndex, setHistoryIndex] = useState(-1);
+  const historyIndexRef = useRef(-1);
   const savedInput = useRef("");
+  const [, forceRender] = useState(0);
+
+  const setHistoryIndex = useCallback((idx) => {
+    historyIndexRef.current = idx;
+    forceRender((n) => n + 1);
+  }, []);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-
-  // Reset history index when value changes from typing (not from history nav)
-  const historyNavRef = useRef(false);
-  useEffect(() => {
-    if (!historyNavRef.current) {
-      setHistoryIndex(-1);
-    }
-    historyNavRef.current = false;
-  }, [value]);
 
   function handleKeyDown(e) {
     if (e.key === "Enter") {
@@ -144,12 +141,11 @@ export default function TerminalInput({
     if (e.key === "ArrowUp") {
       e.preventDefault();
       if (loginMode || commandHistory.length === 0) return;
-      const newIndex = historyIndex + 1;
+      const newIndex = historyIndexRef.current + 1;
       if (newIndex >= commandHistory.length) return;
-      if (historyIndex === -1) {
+      if (historyIndexRef.current === -1) {
         savedInput.current = value;
       }
-      historyNavRef.current = true;
       setHistoryIndex(newIndex);
       onChange(commandHistory[commandHistory.length - 1 - newIndex]);
       return;
@@ -158,9 +154,8 @@ export default function TerminalInput({
     if (e.key === "ArrowDown") {
       e.preventDefault();
       if (loginMode) return;
-      const newIndex = historyIndex - 1;
+      const newIndex = historyIndexRef.current - 1;
       if (newIndex < -1) return;
-      historyNavRef.current = true;
       setHistoryIndex(newIndex);
       if (newIndex === -1) {
         onChange(savedInput.current);
@@ -194,7 +189,10 @@ export default function TerminalInput({
           ref={inputRef}
           type={loginMode === "password" ? "password" : "text"}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            historyIndexRef.current = -1;
+            onChange(e.target.value);
+          }}
           onKeyDown={handleKeyDown}
           onBlur={() => setTimeout(() => inputRef.current?.focus(), 10)}
           className="absolute inset-0 w-full bg-transparent text-gray-300 outline-none caret-transparent"
