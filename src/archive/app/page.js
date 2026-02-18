@@ -14,11 +14,11 @@ export default function Home() {
           Taiyo Williamson
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-muted">
-          CS student at the University of San Francisco pursuing a B.S./M.S.
-          (4+1). Interested in systems, cloud infrastructure, and AI —
-          from building Go-based tooling at Fastly to RAG-powered health
-          coaching chatbots. Currently a research assistant and founding
-          Hack4Impact USF.
+          CS student at the University of San Francisco pursuing a B.S./M.S. (4+1).
+          <br />
+          Interested in systems, cloud infrastructure, and AI — from building edge-cache tooling to homelabbing and self-hosting, trying to learn things that excite.
+          <br />
+          Software/Cloud Engineer
         </p>
         <div className="mt-6 flex gap-3">
           <Link
