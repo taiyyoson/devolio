@@ -4,7 +4,7 @@ import { useReducer, useRef, useEffect, useCallback } from "react";
 import TerminalLine from "./terminal/TerminalLine";
 import TerminalInput from "./terminal/TerminalInput";
 import { buildFileSystem } from "@/lib/filesystem";
-import { executeCommand } from "@/lib/commands";
+import { executeCommand, commandNames } from "@/lib/commands";
 import { createClient } from "@/lib/supabase/client";
 import KanbanOverlay from "./kanban/KanbanOverlay";
 
@@ -21,6 +21,7 @@ const initialState = {
   currentInput: "",
   cwd: "~",
   isAuthenticated: false,
+  commandHistory: [],
   showKanban: false,
   loginMode: null, // null | "email" | "password"
   loginEmail: "",
@@ -65,16 +66,19 @@ function reducer(state, action) {
 
       // Regular command execution
       const promptLine = { type: "prompt", cwd: state.cwd, content: input };
+      const newCommandHistory = input ? [...state.commandHistory, input] : state.commandHistory;
       const context = {
         cwd: state.cwd,
         fileSystem,
         isAuthenticated: state.isAuthenticated,
+        commandHistory: newCommandHistory,
       };
       const result = executeCommand(input, context);
 
       let newState = {
         ...state,
         currentInput: "",
+        commandHistory: newCommandHistory,
         history: [...state.history, promptLine, ...result.output],
         cwd: result.newCwd || state.cwd,
       };
@@ -202,6 +206,9 @@ export default function Terminal({ onToggleView }) {
           onChange={handleChange}
           onSubmit={handleSubmit}
           loginMode={state.loginMode}
+          commands={commandNames}
+          fileSystem={fileSystem}
+          commandHistory={state.commandHistory}
         />
       </div>
 
