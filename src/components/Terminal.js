@@ -12,7 +12,7 @@ const fileSystem = buildFileSystem();
 
 const WELCOME_LINES = [
   { type: "system", content: "Welcome to devolio — Taiyo Williamson's portfolio" },
-  { type: "system", content: 'Type "help" to see available commands.' },
+  { type: "system", content: 'Type "help" for commands or "gui" for the traditional view.' },
   { type: "output", content: "" },
 ];
 
@@ -91,13 +91,15 @@ function reducer(state, action) {
         newState._pendingOpen = result.actionData;
       } else if (result.action === "theme") {
         newState._pendingTheme = true;
+      } else if (result.action === "gui") {
+        newState._pendingGui = true;
       }
 
       return newState;
     }
 
     case "CLEAR_SIDE_EFFECTS":
-      return { ...state, _pendingOpen: undefined, _pendingTheme: undefined, _pendingLogin: undefined };
+      return { ...state, _pendingOpen: undefined, _pendingTheme: undefined, _pendingLogin: undefined, _pendingGui: undefined };
 
     case "LOGIN_SUCCESS":
       return {
@@ -123,7 +125,7 @@ function reducer(state, action) {
   }
 }
 
-export default function Terminal() {
+export default function Terminal({ onToggleView }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const scrollRef = useRef(null);
 
@@ -155,6 +157,10 @@ export default function Terminal() {
       localStorage.setItem("theme", isDark ? "dark" : "light");
       dispatch({ type: "CLEAR_SIDE_EFFECTS" });
     }
+    if (state._pendingGui) {
+      dispatch({ type: "CLEAR_SIDE_EFFECTS" });
+      if (onToggleView) onToggleView();
+    }
     if (state._pendingLogin) {
       const { email, password } = state._pendingLogin;
       dispatch({ type: "CLEAR_SIDE_EFFECTS" });
@@ -171,7 +177,7 @@ export default function Terminal() {
         }
       });
     }
-  }, [state._pendingOpen, state._pendingTheme, state._pendingLogin]);
+  }, [state._pendingOpen, state._pendingTheme, state._pendingLogin, state._pendingGui, onToggleView]);
 
   const handleSubmit = useCallback(() => {
     dispatch({ type: "SUBMIT" });
