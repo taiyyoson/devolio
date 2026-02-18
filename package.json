@@ -18,7 +18,7 @@
     "@supabase/supabase-js": "^2.95.3",
     "@tailwindcss/typography": "^0.5.19",
     "gray-matter": "^4.0.3",
-    "next": "16.0.0",
+    "next": "16.0.10",
     "next-mdx-remote": "^6.0.0",
     "react": "19.2.0",
     "react-dom": "19.2.0"
@@ -27,7 +27,7 @@
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
-    "eslint-config-next": "16.0.0",
+    "eslint-config-next": "16.0.10",
     "tailwindcss": "^4"
   }
 }
