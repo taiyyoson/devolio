@@ -17,7 +17,7 @@ export default function PortfolioHero() {
           github
         </a>
         <a
-          href="https://linkedin.com/in/taiyo-williamson"
+          href="https://linkedin.com/in/taiyowson"
           target="_blank"
           rel="noopener noreferrer"
           className="text-accent hover:text-accent-hover transition-colors"
@@ -25,7 +25,7 @@ export default function PortfolioHero() {
           linkedin
         </a>
         <a
-          href="mailto:taiyo@dons.usfca.edu"
+          href="mailto:tpwilliamson@dons.usfca.edu"
           className="text-accent hover:text-accent-hover transition-colors"
         >
           email
