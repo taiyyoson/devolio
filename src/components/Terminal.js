@@ -224,6 +224,7 @@ export default function Terminal({ onToggleView }) {
           commands={commandNames}
           fileSystem={fileSystem}
           commandHistory={state.commandHistory}
+          overlayOpen={state.showKanban}
         />
       </div>
 

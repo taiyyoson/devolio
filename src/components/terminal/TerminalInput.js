@@ -75,6 +75,7 @@ export default function TerminalInput({
   commands = [],
   fileSystem,
   commandHistory = [],
+  overlayOpen = false,
 }) {
   const inputRef = useRef(null);
   const historyIndexRef = useRef(-1);
@@ -89,6 +90,13 @@ export default function TerminalInput({
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  // Re-focus terminal input when overlay closes
+  useEffect(() => {
+    if (!overlayOpen) {
+      inputRef.current?.focus();
+    }
+  }, [overlayOpen]);
 
   function handleKeyDown(e) {
     if (e.key === "Enter") {
