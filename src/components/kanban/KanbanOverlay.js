@@ -13,7 +13,7 @@ export default function KanbanOverlay({ onClose }) {
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-black/80">
+    <div data-kanban-overlay className="fixed inset-0 z-50 flex flex-col bg-black/80">
       {/* Title bar */}
       <div className="flex items-center justify-between border-b border-gray-800 bg-gray-900 px-4 py-2">
         <span className="text-sm font-medium text-gray-300">Kanban Board</span>

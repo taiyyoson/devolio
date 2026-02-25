@@ -49,9 +49,10 @@ export default function KanbanColumn({ column, onAddCard, onEditCard, onDeleteCa
           <div className="space-y-1">
             <input
               autoFocus
+              
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+              onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter") handleAdd(); }}
               placeholder="Card title..."
               className="w-full rounded bg-gray-800 px-2 py-1 text-sm text-gray-300 outline-none border border-gray-700 focus:border-blue-500"
             />

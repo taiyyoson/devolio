@@ -112,7 +112,7 @@ export default function KanbanBoard() {
           <input
             value={newColumnTitle}
             onChange={(e) => setNewColumnTitle(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleAddColumn()}
+            onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter") handleAddColumn(); }}
             placeholder="New column..."
             className="rounded bg-gray-900 border border-gray-800 px-3 py-2 text-sm text-gray-400 outline-none focus:border-gray-600"
           />

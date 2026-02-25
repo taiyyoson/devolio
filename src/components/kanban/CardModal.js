@@ -22,12 +22,14 @@ export default function CardModal({ card, onSave, onClose }) {
         </h3>
         <input
           autoFocus
+          onKeyDown={(e) => e.stopPropagation()}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title"
           className="w-full rounded bg-gray-800 px-3 py-2 text-sm text-gray-300 outline-none border border-gray-700 focus:border-blue-500 mb-2"
         />
         <textarea
+          onKeyDown={(e) => e.stopPropagation()}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description (optional)"

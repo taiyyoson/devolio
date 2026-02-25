@@ -194,7 +194,16 @@ export default function TerminalInput({
             onChange(e.target.value);
           }}
           onKeyDown={handleKeyDown}
-          onBlur={() => setTimeout(() => inputRef.current?.focus(), 10)}
+
+          onBlur={() => setTimeout(() => {
+            const active = document.activeElement;
+            const isInOverlay = active?.closest('[data-kanban-overlay]');
+            if (!isInOverlay) {
+              inputRef.current?.focus();
+            }
+
+          }, 10)}
+          
           className="absolute inset-0 w-full bg-transparent text-gray-300 outline-none caret-transparent"
           autoComplete="off"
           autoCapitalize="off"
