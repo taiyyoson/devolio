@@ -4,29 +4,29 @@
 @custom-variant dark (&:where(.dark *));
 
 :root {
-  --background: #f8faff;
-  --foreground: #0f172a;
-  --muted: #64748b;
-  --border: #d6e0f0;
-  --card: #eef2fb;
-  --card-hover: #e4eaf7;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-  --tag-bg: #dbeafe;
-  --tag-text: #1e40af;
+  --background: #f6f7f4;
+  --foreground: #1a1d1a;
+  --muted: #6b7268;
+  --border: #e1e4dc;
+  --card: #eef0ea;
+  --card-hover: #e6e9e1;
+  --accent: #2f9461;
+  --accent-hover: #237a4d;
+  --tag-bg: #e3ecdf;
+  --tag-text: #2f6b46;
 }
 
 .dark {
-  --background: #0b1120;
-  --foreground: #e2e8f0;
-  --muted: #94a3b8;
-  --border: #1e293b;
-  --card: #111827;
-  --card-hover: #1a2332;
-  --accent: #3b82f6;
-  --accent-hover: #60a5fa;
-  --tag-bg: #172554;
-  --tag-text: #93c5fd;
+  --background: #0e1116;
+  --foreground: #e6edf3;
+  --muted: #8b949e;
+  --border: #1f242b;
+  --card: #161b22;
+  --card-hover: #1c222b;
+  --accent: #7ee787;
+  --accent-hover: #a8f0b1;
+  --tag-bg: #143321;
+  --tag-text: #7ee787;
 }
 
 @theme inline {
