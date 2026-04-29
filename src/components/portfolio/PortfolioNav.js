@@ -1,40 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function PortfolioNav({ onSwitchToTerminal }) {
-  const [isDark, setIsDark] = useState(() =>
-    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
-  );
+  const [mounted, setMounted] = useState(false);
+  const [isDark, setIsDark] = useState(true);
+
+  useEffect(() => {
+    setMounted(true);
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
 
   function toggleTheme() {
-    document.documentElement.classList.toggle("dark");
-    const dark = document.documentElement.classList.contains("dark");
-    localStorage.setItem("theme", dark ? "dark" : "light");
-    setIsDark(dark);
+    const nextDark = !document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", nextDark);
+    localStorage.setItem("theme", nextDark ? "dark" : "light");
+    setIsDark(nextDark);
   }
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-sm bg-background/80 border-b border-border">
-      <div className="max-w-2xl mx-auto px-6 py-3 flex items-center justify-between">
-        <span className="font-mono text-sm text-foreground">taiyo williamson</span>
+      <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+        <span className="font-mono text-sm text-muted">taiyo williamson</span>
         <div className="flex items-center gap-4 text-sm">
-          <a href="#projects" className="text-muted hover:text-foreground transition-colors hidden sm:inline">
-            projects
-          </a>
-          <a href="#experience" className="text-muted hover:text-foreground transition-colors hidden sm:inline">
-            experience
-          </a>
           <button
             onClick={toggleTheme}
             className="text-muted hover:text-foreground transition-colors"
             aria-label="Toggle theme"
+            suppressHydrationWarning
           >
-            {isDark ? "☀" : "☾"}
+            {mounted ? (isDark ? "☀" : "☾") : "☾"}
           </button>
           <button
             onClick={onSwitchToTerminal}
             className="font-mono text-muted hover:text-foreground transition-colors"
+            aria-label="Open terminal"
+            title="Open terminal (press `)"
           >
             {">"}_
           </button>
