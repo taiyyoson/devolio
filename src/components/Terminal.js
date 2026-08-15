@@ -162,7 +162,7 @@ export default function Terminal({ onToggleView }) {
   // Handle side effects (open URL, toggle theme, login)
   useEffect(() => {
     if (state._pendingOpen) {
-      window.open(state._pendingOpen, "_blank");
+      window.open(state._pendingOpen, "_blank", "noopener,noreferrer");
       dispatch({ type: "CLEAR_SIDE_EFFECTS" });
     }
     if (state._pendingTheme) {
