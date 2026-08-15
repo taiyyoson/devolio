@@ -16,7 +16,7 @@ import CardModal from "./CardModal";
 import { useKanban } from "@/hooks/useKanban";
 
 export default function KanbanBoard() {
-  const { board, loading, addCard, updateCard, deleteCard, moveCard, addColumn, deleteColumn } = useKanban();
+  const { board, loading, error, dismissError, addCard, updateCard, deleteCard, moveCard, addColumn, deleteColumn } = useKanban();
   const [editingCard, setEditingCard] = useState(null);
   const [activeCard, setActiveCard] = useState(null);
   const [newColumnTitle, setNewColumnTitle] = useState("");
@@ -95,6 +95,21 @@ export default function KanbanBoard() {
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      {error && (
+        <div
+          role="alert"
+          className="flex items-center justify-between gap-4 border-b border-red-900 bg-red-950 px-4 py-2 text-sm text-red-300"
+        >
+          <span>{error}</span>
+          <button
+            onClick={dismissError}
+            className="rounded px-2 py-0.5 text-xs text-red-400 hover:bg-red-900 hover:text-red-200"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       <div className="flex gap-4 overflow-x-auto p-4 h-full items-start">
         {board.columns.map((column) => (
           <KanbanColumn

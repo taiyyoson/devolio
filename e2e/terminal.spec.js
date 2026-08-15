@@ -1,10 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { runCommand, getOutputLines } from "./helpers/terminal";
+import { openTerminal, runCommand } from "./helpers/terminal";
 
 test.describe("Terminal basics", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.waitForSelector("input");
+    await openTerminal(page);
   });
 
   test("shows welcome message on load", async ({ page }) => {

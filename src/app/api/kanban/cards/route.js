@@ -1,48 +1,75 @@
-import { createClient } from "@/lib/supabase/server";
+import { authenticate, dbError, fail, pick, readJson } from "@/lib/api";
 
 export async function POST(request) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const { supabase, error } = await authenticate();
+  if (error) return error;
 
-  const { column_id, title, description, position } = await request.json();
-  const { data, error } = await supabase
+  const body = await readJson(request);
+  if (!body) return fail(400, "Invalid JSON body");
+
+  const { value, error: invalid } = pick(body, {
+    required: ["column_id", "title", "position"],
+    optional: ["description"],
+  });
+  if (invalid) return invalid;
+
+  const { data, error: queryError } = await supabase
     .from("cards")
-    .insert({ column_id, title, description: description || "", position })
+    .insert({ description: "", ...value })
     .select()
     .single();
 
-  if (error) return Response.json({ error: error.message }, { status: 500 });
+  if (queryError) return dbError("cards.POST", queryError);
   return Response.json(data);
 }
 
 export async function PATCH(request) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const { supabase, error } = await authenticate();
+  if (error) return error;
 
-  const { id, ...updates } = await request.json();
+  const body = await readJson(request);
+  if (!body) return fail(400, "Invalid JSON body");
+
+  const { value: identity, error: invalidId } = pick(body, { required: ["id"] });
+  if (invalidId) return invalidId;
+
+  const { value: updates, error: invalid } = pick(body, {
+    optional: ["title", "description", "position", "column_id"],
+  });
+  if (invalid) return invalid;
+
+  if (Object.keys(updates).length === 0) {
+    return fail(400, "No updatable fields provided");
+  }
+
   updates.updated_at = new Date().toISOString();
 
-  const { data, error } = await supabase
+  const { data, error: queryError } = await supabase
     .from("cards")
     .update(updates)
-    .eq("id", id)
+    .eq("id", identity.id)
     .select()
     .single();
 
-  if (error) return Response.json({ error: error.message }, { status: 500 });
+  if (queryError) return dbError("cards.PATCH", queryError);
   return Response.json(data);
 }
 
 export async function DELETE(request) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const { supabase, error } = await authenticate();
+  if (error) return error;
 
-  const { id } = await request.json();
-  const { error } = await supabase.from("cards").delete().eq("id", id);
+  const body = await readJson(request);
+  if (!body) return fail(400, "Invalid JSON body");
 
-  if (error) return Response.json({ error: error.message }, { status: 500 });
+  const { value, error: invalid } = pick(body, { required: ["id"] });
+  if (invalid) return invalid;
+
+  const { error: queryError } = await supabase
+    .from("cards")
+    .delete()
+    .eq("id", value.id);
+
+  if (queryError) return dbError("cards.DELETE", queryError);
   return Response.json({ success: true });
 }

@@ -1,10 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { runCommand } from "./helpers/terminal";
+import { openTerminal, runCommand } from "./helpers/terminal";
 
 test.describe("Filesystem navigation", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.waitForSelector("input");
+    await openTerminal(page);
   });
 
   test("ls shows root directory contents", async ({ page }) => {

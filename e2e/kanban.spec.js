@@ -1,10 +1,9 @@
 import { test, expect } from "@playwright/test";
-import { runCommand } from "./helpers/terminal";
+import { openTerminal, runCommand } from "./helpers/terminal";
 
 test.describe("Kanban access control", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.waitForSelector("input");
+    await openTerminal(page);
   });
 
   test("/kanban shows access denied when not authenticated", async ({ page }) => {

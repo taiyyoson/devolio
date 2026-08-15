@@ -1,21 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
+
+function subscribeToTheme(onStoreChange) {
+  const observer = new MutationObserver(onStoreChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
+
+const getIsDark = () => document.documentElement.classList.contains("dark");
+
+// Matches the inline script in layout.js, which defaults to dark.
+const getIsDarkOnServer = () => true;
 
 export default function PortfolioNav({ onSwitchToTerminal }) {
-  const [mounted, setMounted] = useState(false);
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    setMounted(true);
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
+  const isDark = useSyncExternalStore(subscribeToTheme, getIsDark, getIsDarkOnServer);
 
   function toggleTheme() {
-    const nextDark = !document.documentElement.classList.contains("dark");
+    const nextDark = !getIsDark();
     document.documentElement.classList.toggle("dark", nextDark);
     localStorage.setItem("theme", nextDark ? "dark" : "light");
-    setIsDark(nextDark);
   }
 
   return (
@@ -29,7 +36,7 @@ export default function PortfolioNav({ onSwitchToTerminal }) {
             aria-label="Toggle theme"
             suppressHydrationWarning
           >
-            {mounted ? (isDark ? "☀" : "☾") : "☾"}
+            {isDark ? "☀" : "☾"}
           </button>
           <button
             onClick={onSwitchToTerminal}

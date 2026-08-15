@@ -81,6 +81,7 @@ export default function TerminalInput({
   const historyIndexRef = useRef(-1);
   const savedInput = useRef("");
   const [, forceRender] = useState(0);
+  const [focused, setFocused] = useState(false);
 
   const setHistoryIndex = useCallback((idx) => {
     historyIndexRef.current = idx;
@@ -202,24 +203,19 @@ export default function TerminalInput({
             onChange(e.target.value);
           }}
           onKeyDown={handleKeyDown}
-
-          onBlur={() => setTimeout(() => {
-            const active = document.activeElement;
-            const isInOverlay = active?.closest('[data-kanban-overlay]');
-            if (!isInOverlay) {
-              inputRef.current?.focus();
-            }
-
-          }, 10)}
-          
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           className="absolute inset-0 w-full bg-transparent text-gray-300 outline-none caret-transparent"
+          aria-label={promptLabel ? promptLabel.trim() : "Terminal input"}
           autoComplete="off"
           autoCapitalize="off"
           autoCorrect="off"
           spellCheck={false}
         />
         <span className="invisible">{loginMode === "password" ? "*".repeat(value.length) : value}</span>
-        <span className="inline-block w-[0.6em] h-[1.1em] bg-gray-300 align-middle animate-blink" />
+        {focused && (
+          <span className="inline-block w-[0.6em] h-[1.1em] bg-gray-300 align-middle animate-blink" />
+        )}
       </div>
     </div>
   );
