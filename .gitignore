@@ -35,6 +35,10 @@ yarn-error.log*
 # CLAUDE.md files
 CLAUDE.*
 
+# claude code — settings.json is project config and stays tracked
+.claude/settings.local.json
+.claude/.mode
+
 # env files (can opt-in for committing if needed)
 .env*
 
@@ -44,3 +48,6 @@ CLAUDE.*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# stray screenshots dropped in the repo root
+/Screenshot*.png
