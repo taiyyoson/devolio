@@ -36,8 +36,7 @@ yarn-error.log*
 CLAUDE.*
 
 # claude code — settings.json is project config and stays tracked
-.claude/settings.local.json
-.claude/.mode
+.claude/
 
 # env files (can opt-in for committing if needed)
 .env*

@@ -9,7 +9,7 @@ function formatDate(dateStr) {
 
 export default function PortfolioExperience() {
   return (
-    <section id="experience" className="mb-16">
+    <section id="experience" className="max-w-prose mb-16">
       <h2 className="text-xs uppercase tracking-widest text-muted mb-6">Experience</h2>
       <ul className="space-y-6">
         {experience.map((exp, i) => (

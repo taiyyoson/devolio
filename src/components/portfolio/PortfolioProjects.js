@@ -2,7 +2,7 @@ import projects from "@/data/projects.json";
 
 export default function PortfolioProjects() {
   return (
-    <section id="projects" className="mb-16">
+    <section id="projects" className="max-w-prose mb-16">
       <h2 className="text-xs uppercase tracking-widest text-muted mb-6">Projects</h2>
       <ul className="space-y-6">
         {projects.map((project) => (
