@@ -1,4 +1,4 @@
-import { Geist, JetBrains_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono, Newsreader, Ramaraja } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -9,6 +9,17 @@ const geistSans = Geist({
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+});
+
+const ramaraja = Ramaraja({
+  variable: "--font-ramaraja",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 export const metadata = {
@@ -40,7 +51,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${geistSans.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${geistSans.variable} ${jetbrainsMono.variable} ${newsreader.variable} ${ramaraja.variable} antialiased`}
       >
         {children}
       </body>
