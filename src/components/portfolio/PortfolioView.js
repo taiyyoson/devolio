@@ -11,6 +11,8 @@ const TABS = [
   { id: "about", label: "About" },
   { id: "projects", label: "Projects" },
   { id: "experience", label: "Experience" },
+  { id: "blogs", label: "Blogs" },
+  { id: "resume", label: "Resume" },
 ];
 
 export default function PortfolioView({ onSwitchToTerminal }) {
@@ -23,7 +25,7 @@ export default function PortfolioView({ onSwitchToTerminal }) {
   return (
     <div className="min-h-screen bg-background text-foreground font-sans portfolio-fade-in">
       <PortfolioNav onSwitchToTerminal={onSwitchToTerminal} />
-      <main className="max-w-5xl mx-auto px-6 py-12">
+      <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="md:grid md:grid-cols-[180px_1fr] md:gap-12">
           <aside className="mb-8 md:mb-0">
             <div className="md:sticky md:top-24">
@@ -58,7 +60,7 @@ export default function PortfolioView({ onSwitchToTerminal }) {
               </nav>
             </div>
           </aside>
-          <article className="max-w-prose text-lg leading-relaxed" style={{ fontFamily: '"Times New Roman", Times, serif' }}>
+          <article className="max-w-4xl font-serif text-lg leading-relaxed">
             {tab === "about" && <PortfolioHero />}
             {tab === "projects" && <PortfolioProjects />}
             {tab === "experience" && <PortfolioExperience />}
