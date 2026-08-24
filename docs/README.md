@@ -28,6 +28,7 @@ Stack: Next.js 16 · React 19 · Tailwind v4 · Supabase.
 
 | Doc | What's in it |
 |---|---|
+| [content.md](./content.md) | Editing the About text, projects, and experience; adding a left-rail tab |
 | [infrastructure.md](./infrastructure.md) | Domain, hosting, database — who runs what, which dashboard to open |
 
 ## Commands worth remembering
