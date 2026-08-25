@@ -173,3 +173,38 @@ the *browser user*, the GitHub token is the server's *write credential* and cann
 identify a caller. But GitHub OAuth could replace Supabase entirely and leave one
 provider instead of two. Not started; worth costing before more is built on
 Supabase.
+
+## 2026-08-24 (later) — Supabase removed entirely
+
+User directive: rip Supabase out now, as its own change, before building GitHub
+OAuth. Done in `b11e061` (code, user-committed) + `35dfbf1` (docs).
+
+**Deleted:** `src/lib/supabase/`, `src/proxy.js`, `supabase/`, `@supabase/ssr`,
+`@supabase/supabase-js`, `.env.example`, the `*.supabase.co` CSP `connect-src`
+entries, and the whole email/password login state machine in `Terminal.js` /
+`TerminalInput.js` (`loginMode`, `loginEmail`, `_pendingLogin`, `LOGIN_SUCCESS`,
+`LOGIN_FAILURE`, both masked inputs, ~9 conditional branches).
+
+**Auth is deliberately closed, not degraded.** `authenticate()` returns 503 and
+`isOwner()` returns false unconditionally in `src/lib/api.js`. `/login` prints
+"no authentication provider configured". These two functions are the seam the OAuth
+work slots into — same signatures, same return shapes, so `/api/posts` and
+`/write` need no changes when it lands.
+
+Note `/write` flipped from `ƒ` (dynamic) to `○` (static) in the build output,
+because `isOwner()` no longer reads cookies so Next prerenders the redirect. It
+returns to dynamic automatically once cookie reads come back.
+
+**Verified:** lint clean, build ✓, **31/31 E2E**, `npm audit` 0 vulnerabilities.
+
+**Next:** GitHub OAuth. A full design exists from a Plan agent — session cookie
+format, four routes, the terminal-return mechanism, and a ranked risk list. Key
+points not to lose:
+- Both cookies must be `SameSite=Lax`. `Strict` breaks the callback 100% of the
+  time, because the redirect chain from github.com counts as cross-site.
+- GitHub returns **HTTP 200 with `{"error":...}`** on a bad verification code —
+  checking `res.ok` alone silently accepts a failed exchange.
+- The return hash (`/#login=ok`) is attacker-controllable. It may drive the view and
+  a message from a fixed allowlist, never `isAuthenticated` — that comes only from
+  `/api/auth/me`.
+- Verify the HMAC over the raw payload string *before* base64-decoding it.
