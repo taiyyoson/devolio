@@ -16,8 +16,8 @@ export function help() {
       { type: "output", content: "  date              Display current date and time" },
       { type: "output", content: "  history           Show command history" },
       { type: "output", content: "  gui               Switch to traditional portfolio view" },
-      { type: "output", content: "  /login            Admin login" },
       { type: "output", content: "  /kanban           Open kanban board (admin only)" },
+      { type: "output", content: "  /login            Admin login" },
     ],
   };
 }

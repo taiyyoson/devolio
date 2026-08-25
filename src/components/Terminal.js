@@ -6,7 +6,6 @@ import TerminalInput from "./terminal/TerminalInput";
 import { buildFileSystem } from "@/lib/filesystem";
 import { executeCommand, commandNames } from "@/lib/commands";
 import { createClient } from "@/lib/supabase/client";
-import KanbanOverlay from "./kanban/KanbanOverlay";
 
 const fileSystem = buildFileSystem();
 
@@ -22,7 +21,6 @@ const initialState = {
   cwd: "~",
   isAuthenticated: false,
   commandHistory: [],
-  showKanban: false,
   loginMode: null, // null | "email" | "password"
   loginEmail: "",
 };
@@ -88,8 +86,6 @@ function reducer(state, action) {
         newState.history = [];
       } else if (result.action === "login") {
         newState.loginMode = "email";
-      } else if (result.action === "kanban") {
-        newState.showKanban = true;
       } else if (result.action === "open" && result.actionData) {
         // Side effect handled in component via useEffect
         newState._pendingOpen = result.actionData;
@@ -130,9 +126,6 @@ function reducer(state, action) {
           { type: "output", content: action.matches.join("  ") },
         ],
       };
-
-    case "TOGGLE_KANBAN":
-      return { ...state, showKanban: !state.showKanban };
 
     default:
       return state;
@@ -224,7 +217,6 @@ export default function Terminal({ onToggleView }) {
           commands={commandNames}
           fileSystem={fileSystem}
           commandHistory={state.commandHistory}
-          overlayOpen={state.showKanban}
         />
       </div>
 
@@ -244,10 +236,6 @@ export default function Terminal({ onToggleView }) {
           />
         </div>
       </div>
-
-      {state.showKanban && (
-        <KanbanOverlay onClose={() => dispatch({ type: "TOGGLE_KANBAN" })} />
-      )}
     </div>
   );
 }
