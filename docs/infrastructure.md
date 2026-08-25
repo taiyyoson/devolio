@@ -10,10 +10,9 @@ Who runs what, and which dashboard to open when something breaks.
 |---|---|---|
 | Domain `taiyyoson.com` | **Vercel** (registrar) | https://vercel.com/domains |
 | Hosting / deploys | **Vercel** | https://vercel.com/dashboard |
-| Database + auth | **Supabase** | https://supabase.com/dashboard |
 | Source | **GitHub** `taiyyoson/devolio` | https://github.com/taiyyoson/devolio |
 
-Two logins total: Vercel and Supabase. That's the whole surface area.
+One login: Vercel. There is no database and no auth provider.
 
 ## Domain — bought at Vercel
 
@@ -56,56 +55,34 @@ versa — they're independent.
 the deployed site loses auth or publishing but local works, suspect missing/stale env
 vars in Vercel project settings first.
 
-## Database — Supabase
+## Data — there isn't any
 
-Project ref: **`jkqazldcmdynmpetjjdu`**
-Dashboard: https://supabase.com/dashboard/project/jkqazldcmdynmpetjjdu
-
-(That ref is safe to write down — it's part of the `NEXT_PUBLIC_SUPABASE_URL` and
-already ships in the browser bundle. The keys are not here; they live in `.env.local`
-and in Vercel.)
-
-Used for **auth only**. The terminal's `/login` command signs in via
-`supabase.auth.signInWithPassword`; a valid session is what unlocks `/write`.
-Single admin user, that's you.
-
-### Schema
-
-**No application tables are in use.** The kanban board was removed and its tables
-(`boards`, `columns`, `cards`) are abandoned —
-[`supabase/schema.sql`](../supabase/schema.sql) now holds the `DROP TABLE`
-statements to clean them up. Nothing there is auto-applied; paste it into the
-Supabase SQL editor by hand.
-
-Blog posts are **not** in the database. They're markdown files in git — see
+**No database.** Supabase was removed entirely and the project can be deleted. Blog
+posts are markdown files in `src/content/blog/`, read at build time — see
 [blogging.md](./blogging.md).
+
+## Authentication — currently none
+
+Supabase provided identity; it is gone, and GitHub OAuth has not been built yet.
+`authenticate()` returns 503 and `isOwner()` returns false unconditionally, so
+`/write` and `POST /api/posts` are closed. Publishing a post means committing a
+markdown file by hand until OAuth lands.
 
 ### How it's wired
 
 | File | Role |
 |---|---|
-| `src/lib/supabase/client.js` | Browser client. Returns `null` if env vars are missing. |
-| `src/lib/supabase/server.js` | Server client. |
-| `src/proxy.js` | Refreshes the session on every request. Skips cleanly if env vars are absent. |
-| `src/lib/api.js` | Auth guard, field allowlists, generic error responses. |
+| `src/lib/api.js` | Auth stubs, field allowlists, generic error responses. |
 | `src/lib/rate-limit.js` | Per-user request cap, in-memory and per-instance. |
-| `src/app/api/posts/route.js` | Commits a blog post to the repo. 401s before parsing the body. |
+| `src/app/api/posts/route.js` | Commits a blog post to the repo. 503s while auth is absent. |
 | `src/lib/github.js` | GitHub contents API client. Reads its token at call time. |
-
-The `null`-when-unconfigured pattern is deliberate: the site degrades to a working
-static portfolio instead of crashing when Supabase isn't set up.
 
 ## Local setup
 
-`.env.local` is gitignored and holds:
+Nothing is required to run the site — `npm install && npm run dev` is enough.
 
-```
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-```
-
-Both values come from Supabase → Project Settings → API. `.env.example` has the
-shape without the values.
+Publishing needs `GITHUB_TOKEN` and `GITHUB_REPO` (see [blogging.md](./blogging.md)),
+though it is closed regardless until authentication exists.
 
 ## When something breaks
 
@@ -114,7 +91,6 @@ shape without the values.
 | Site down / 404 on a route | Vercel → Deployments (did the last one fail?) |
 | Domain not resolving, cert warning | Vercel → Domains |
 | Renewal / billing on the domain | Vercel → Domains, and Settings → Billing |
-| Login fails | Supabase → Auth (is the user still there?) |
 | `/write` 503s on publish | `GITHUB_TOKEN` / `GITHUB_REPO` missing in Vercel |
 | Published post not live | Check the commit landed, then Vercel → Deployments |
 | Works locally, broken deployed | Vercel env vars |

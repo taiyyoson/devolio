@@ -40,18 +40,11 @@ renders.
 
 ## Setup for the browser editor
 
-Needs the Supabase vars (auth), `OWNER_USER_ID` (authorization), and three GitHub
-vars (the write path) — see `.env.example`.
+**The editor is currently closed.** Supabase provided authentication and has been
+removed; GitHub OAuth is not built yet, so `/write` redirects and `POST /api/posts`
+returns 503. Until then, publish by writing a file and pushing (path #1 above).
 
-**`OWNER_USER_ID` is the one that actually protects the repo.** Supabase tells you
-*someone* is logged in; it does not tell you it's you. The anon key is public by
-design, so if signups are enabled in the Supabase project, anyone can create an
-account and hold a valid session. `OWNER_USER_ID` is compared against `user.id` on
-every publish and on `/write`, and **denies everyone when unset** — deliberately
-fail-closed. Get the UID from Supabase -> Authentication -> Users.
-
-Disable email signups in Supabase as defence in depth: no one but you needs an
-account, and readers never log in.
+When auth returns, publishing will also need `GITHUB_TOKEN` and `GITHUB_REPO`.
 
 The token must be a **fine-grained** personal access token:
 
@@ -79,10 +72,10 @@ blocked by the CSP. The renderer is the control.
 checks the resolved path stays inside the posts directory — a route param otherwise
 reaches `path.join` and `../../.env` resolves fine.
 
-**`/write` is gated server-side.** The page checks session *and* owner identity in a
-server component and redirects before rendering, so the editor is never sent to an
-anonymous visitor. `POST /api/posts` independently returns 401/403 before it parses
-the body — the UI gate is not the security boundary.
+**`/write` is gated server-side.** The page checks in a server component and
+redirects before rendering, so the editor is never sent to an anonymous visitor.
+`POST /api/posts` gates independently, before it parses the body — the UI gate is
+not the security boundary.
 
 **Frontmatter is serialised by `gray-matter`, not string concatenation.** An earlier
 version hand-built the YAML; an unescaped newline in a field could close the

@@ -11,10 +11,9 @@ npm run dev        # http://localhost:3000
 
 If that works, you're back. Everything else is detail.
 
-Supabase-backed features (`/login`, `/write`) need `.env.local` — see
-[infrastructure.md](./infrastructure.md#local-setup). Without it the site still runs;
-the terminal, portfolio view, the blog, and all static content work fine. Only
-`/login` and browser publishing go dark.
+Authentication is currently unavailable — Supabase was removed and GitHub OAuth is
+not built yet, so `/login` and `/write` are closed. Everything else (terminal,
+portfolio, blog) works with no configuration at all.
 
 ## What this project is
 
@@ -22,7 +21,7 @@ A terminal-style developer portfolio. Type commands to navigate like a filesyste
 `gui` switches to a traditional portfolio view. A markdown blog lives at `/blog`,
 and `/write` is a login-gated editor that commits posts back to this repo.
 
-Stack: Next.js 16 · React 19 · Tailwind v4 · Supabase.
+Stack: Next.js 16 · React 19 · Tailwind v4.
 
 ## The pages
 
@@ -51,10 +50,7 @@ src/data/         content: projects.json, contact.js — edit these, not compone
 src/lib/api.js    auth, validation, and error helpers for the API routes
 src/lib/blog.js   reads and parses the markdown posts
 src/lib/github.js commits posts back to the repo
-src/lib/supabase/ client.js (browser) + server.js (server)
-src/proxy.js      refreshes the Supabase session on every request
 src/content/blog/  markdown posts — one file per post
-supabase/         schema.sql — DROP statements for the removed kanban tables
 e2e/              Playwright specs
 ```
 
