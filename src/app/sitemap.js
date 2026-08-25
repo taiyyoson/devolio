@@ -17,6 +17,8 @@ export default function sitemap() {
       changeFrequency: "monthly",
       priority: 1,
     },
+    { url: `${SITE}/projects`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    { url: `${SITE}/experience`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     {
       url: `${SITE}/blog`,
       lastModified: posts[0]?.lastModified ?? new Date(),

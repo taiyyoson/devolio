@@ -1,5 +1,4 @@
 import Link from "next/link";
-import BlogShell from "@/components/blog/BlogShell";
 import { getPosts, formatPostDate } from "@/lib/blog";
 
 export const metadata = {
@@ -11,10 +10,8 @@ export default function BlogIndex() {
   const posts = getPosts();
 
   return (
-    <BlogShell backHref="/" backLabel="portfolio">
-      <h1 className="font-ramaraja text-xl font-semibold tracking-wide mb-8">
-        WRITING
-      </h1>
+    <section id="blog" className="mb-16">
+      <h2 className="text-xs uppercase tracking-widest text-muted mb-6">Writing</h2>
 
       {posts.length === 0 ? (
         <p className="text-muted">Nothing published yet.</p>
@@ -39,6 +36,6 @@ export default function BlogIndex() {
           ))}
         </ul>
       )}
-    </BlogShell>
+    </section>
   );
 }

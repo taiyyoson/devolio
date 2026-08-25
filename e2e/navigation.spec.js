@@ -74,3 +74,37 @@ test.describe("Filesystem navigation", () => {
     expect(text).toContain("Is a directory");
   });
 });
+
+test.describe("Section routes", () => {
+  const ROUTES = [
+    ["/", "About"],
+    ["/projects", "Projects"],
+    ["/experience", "Experience"],
+    ["/blog", "Blogs"],
+  ];
+
+  for (const [path, label] of ROUTES) {
+    test(`${path} renders with the rail and marks ${label} active`, async ({ page }) => {
+      const res = await page.goto(path);
+      expect(res.status()).toBe(200);
+      await expect(page.locator("aside nav")).toBeVisible();
+      await expect(page.locator(`aside nav a[href="${path}"] span.bg-accent`)).toHaveCount(1);
+    });
+  }
+
+  test("the rail element survives navigation without re-mounting", async ({ page }) => {
+    await page.goto("/");
+    await page.evaluate(() => {
+      document.querySelector("aside").dataset.persisted = "yes";
+    });
+
+    for (const path of ["/projects", "/experience", "/blog", "/"]) {
+      await page.locator(`aside nav a[href="${path}"]`).click();
+      await page.waitForURL(`**${path}`);
+      const persisted = await page.evaluate(
+        () => document.querySelector("aside")?.dataset.persisted === "yes"
+      );
+      expect(persisted, `rail re-mounted navigating to ${path}`).toBe(true);
+    }
+  });
+});

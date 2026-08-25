@@ -1,7 +1,7 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import BlogShell from "@/components/blog/BlogShell";
 import { getPostBySlug, getPostSlugs, formatPostDate } from "@/lib/blog";
 
 export function generateStaticParams() {
@@ -31,22 +31,27 @@ export default async function PostPage({ params }) {
   if (!post) notFound();
 
   return (
-    <BlogShell backHref="/blog" backLabel="writing">
-      <article>
-        <header className="mb-8">
-          <h1 className="font-ramaraja text-2xl font-semibold tracking-wide mb-2">
-            {post.title}
-          </h1>
-          <p className="text-xs text-muted font-mono">
-            {formatPostDate(post.date)}
-            {post.tags.length > 0 && ` · ${post.tags.join(" · ")}`}
-          </p>
-        </header>
+    <article className="mb-16">
+      <Link
+        href="/blog"
+        className="text-xs font-mono text-muted hover:text-foreground transition-colors"
+      >
+        ← writing
+      </Link>
 
-        <div className="prose prose-neutral dark:prose-invert max-w-none font-serif prose-headings:font-ramaraja prose-a:text-accent">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
-        </div>
-      </article>
-    </BlogShell>
+      <header className="mt-6 mb-8">
+        <h1 className="font-ramaraja text-2xl font-semibold tracking-wide mb-2">
+          {post.title}
+        </h1>
+        <p className="text-xs text-muted font-mono">
+          {formatPostDate(post.date)}
+          {post.tags.length > 0 && ` · ${post.tags.join(" · ")}`}
+        </p>
+      </header>
+
+      <div className="prose prose-neutral dark:prose-invert max-w-none font-serif prose-headings:font-ramaraja prose-a:text-accent">
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+      </div>
+    </article>
   );
 }

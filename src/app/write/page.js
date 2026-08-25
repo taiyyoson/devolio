@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { isOwner } from "@/lib/api";
 import { isGitHubConfigured } from "@/lib/github";
-import BlogShell from "@/components/blog/BlogShell";
+import Link from "next/link";
 import PostEditor from "@/components/blog/PostEditor";
 
 export const metadata = {
@@ -13,8 +13,15 @@ export default async function WritePage() {
   if (!(await isOwner())) redirect("/");
 
   return (
-    <BlogShell backHref="/blog" backLabel="writing">
-      <h1 className="font-ramaraja text-xl font-semibold tracking-wide mb-2">
+    <div className="min-h-screen bg-background text-foreground font-sans">
+      <main className="max-w-5xl mx-auto px-6 py-12">
+      <Link
+        href="/blog"
+        className="text-xs font-mono text-muted hover:text-foreground transition-colors"
+      >
+        ← writing
+      </Link>
+      <h1 className="mt-6 font-ramaraja text-xl font-semibold tracking-wide mb-2">
         NEW POST
       </h1>
       <p className="text-xs text-muted font-mono mb-8">
@@ -31,6 +38,7 @@ export default async function WritePage() {
       )}
 
       <PostEditor />
-    </BlogShell>
+      </main>
+    </div>
   );
 }
