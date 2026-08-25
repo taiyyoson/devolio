@@ -14,13 +14,35 @@ const WELCOME_LINES = [
   { type: "output", content: "" },
 ];
 
+// The boot code comes from a URL hash, which anyone can set. It may drive the
+// view and one of these fixed messages — never authentication state. That comes
+// only from /api/auth/me.
+const BOOT_MESSAGES = {
+  ok: { type: "system", content: "Login complete." },
+  already: { type: "system", content: "Already authenticated." },
+  denied: { type: "error", content: "Login cancelled." },
+  forbidden: { type: "error", content: "Access denied — that GitHub account is not the owner." },
+  not_configured: { type: "error", content: "Login is not configured." },
+  rate_limited: { type: "error", content: "Too many login attempts. Wait a minute." },
+  invalid_request: { type: "error", content: "Login failed — malformed callback." },
+  state_missing: { type: "error", content: "Login expired. Try again." },
+  state_mismatch: { type: "error", content: "Login failed — state mismatch." },
+  exchange_failed: { type: "error", content: "Login failed — could not reach GitHub." },
+};
+
 const initialState = {
   history: [...WELCOME_LINES],
   currentInput: "",
   cwd: "~",
   isAuthenticated: false,
+  githubLogin: null,
   commandHistory: [],
 };
+
+function init(boot) {
+  const line = boot ? BOOT_MESSAGES[boot] : null;
+  return line ? { ...initialState, history: [...WELCOME_LINES, line] } : initialState;
+}
 
 function reducer(state, action) {
   switch (action.type) {
@@ -59,16 +81,43 @@ function reducer(state, action) {
         newState._pendingTheme = true;
       } else if (result.action === "gui") {
         newState._pendingGui = true;
+      } else if (result.action === "login") {
+        newState._pendingAuthRedirect = true;
+      } else if (result.action === "logout") {
+        newState._pendingLogout = true;
       }
 
       return newState;
     }
 
     case "CLEAR_SIDE_EFFECTS":
-      return { ...state, _pendingOpen: undefined, _pendingTheme: undefined, _pendingGui: undefined };
+      return { ...state, _pendingOpen: undefined, _pendingTheme: undefined, _pendingGui: undefined, _pendingAuthRedirect: undefined, _pendingLogout: undefined };
 
-    case "SET_AUTH":
-      return { ...state, isAuthenticated: action.value };
+    case "SET_AUTH": {
+      // Idempotent: StrictMode double-invokes effects in dev and this appends
+      // history, so a naive version prints "Authenticated as ..." twice.
+      const login = action.login ?? null;
+      if (state.isAuthenticated === action.value && state.githubLogin === login) return state;
+      return {
+        ...state,
+        isAuthenticated: action.value,
+        githubLogin: login,
+        history: action.value
+          ? [...state.history, { type: "system", content: `Authenticated as ${login}.` }]
+          : state.history,
+      };
+    }
+
+    case "LOGOUT_DONE":
+      return {
+        ...state,
+        isAuthenticated: false,
+        githubLogin: null,
+        history: [...state.history, { type: "system", content: "Signed out." }],
+      };
+
+    case "AUTH_ERROR":
+      return { ...state, history: [...state.history, { type: "error", content: action.message }] };
 
     case "SHOW_COMPLETIONS":
       return {
@@ -85,8 +134,8 @@ function reducer(state, action) {
   }
 }
 
-export default function Terminal({ onToggleView }) {
-  const [state, dispatch] = useReducer(reducer, initialState);
+export default function Terminal({ onToggleView, boot = null }) {
+  const [state, dispatch] = useReducer(reducer, boot, init);
   const scrollRef = useRef(null);
 
   // Auto-scroll to bottom when history changes
@@ -112,7 +161,44 @@ export default function Terminal({ onToggleView }) {
       dispatch({ type: "CLEAR_SIDE_EFFECTS" });
       if (onToggleView) onToggleView();
     }
-  }, [state._pendingOpen, state._pendingTheme, state._pendingGui, onToggleView]);
+    if (state._pendingAuthRedirect) {
+      dispatch({ type: "CLEAR_SIDE_EFFECTS" });
+      // Full page navigation, not router.push: this route 303s to github.com,
+      // and a client-side transition cannot follow a cross-origin redirect.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.assign("/api/auth/login");
+    }
+    if (state._pendingLogout) {
+      dispatch({ type: "CLEAR_SIDE_EFFECTS" });
+      fetch("/api/auth/logout", { method: "POST" })
+        .then((r) =>
+          dispatch(r.ok ? { type: "LOGOUT_DONE" } : { type: "AUTH_ERROR", message: "Sign out failed." })
+        )
+        .catch(() => dispatch({ type: "AUTH_ERROR", message: "Sign out failed." }));
+    }
+  }, [
+    state._pendingOpen,
+    state._pendingTheme,
+    state._pendingGui,
+    state._pendingAuthRedirect,
+    state._pendingLogout,
+    onToggleView,
+  ]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (!cancelled && d.authenticated) {
+          dispatch({ type: "SET_AUTH", value: true, login: d.login });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleSubmit = useCallback(() => {
     dispatch({ type: "SUBMIT" });

@@ -1,8 +1,10 @@
-export function login() {
+export function login(args, context) {
+  if (context.isAuthenticated) {
+    return { output: [{ type: "system", content: "Already authenticated." }] };
+  }
+
   return {
-    output: [
-      { type: "error", content: "login: no authentication provider configured." },
-      { type: "system", content: "GitHub OAuth is being wired up." },
-    ],
+    output: [{ type: "system", content: "Redirecting to GitHub..." }],
+    action: "login",
   };
 }

@@ -1,5 +1,6 @@
 import { allowRequest } from "@/lib/rate-limit";
 import { isValidSlug } from "@/lib/blog";
+import { getSession, isAuthConfigured } from "@/lib/session";
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -18,21 +19,24 @@ export function fail(status, message) {
   return Response.json({ error: message }, { status });
 }
 
-/**
- * There is no identity provider right now — Supabase was removed and GitHub
- * OAuth has not landed yet. Both gates deny unconditionally rather than
- * degrading to "allow", so publishing is closed until auth is rebuilt.
- *
- * `allowRequest` stays imported because the shape of these functions is what
- * the OAuth implementation slots into: resolve a session, key the rate limiter
- * on a stable user id, return { user } or { error }.
- */
-export async function authenticate() {
-  return { error: fail(503, "Authentication is not configured") };
+export async function authenticate({ max, windowMs } = {}) {
+  if (!isAuthConfigured()) return { error: fail(503, "Authentication is not configured") };
+
+  const session = await getSession();
+  if (!session) return { error: fail(401, "Unauthorized") };
+
+  // Keyed on the GitHub numeric id, not the login: ids are immutable, and a
+  // recycled login could otherwise inherit another identity's bucket. Namespaced
+  // because the OAuth callback rate-limits by IP in the same Map.
+  if (!allowRequest(`gh:${session.sub}`, { max, windowMs })) {
+    return { error: fail(429, "Too many requests") };
+  }
+
+  return { user: { id: session.sub, login: session.login } };
 }
 
 export async function isOwner() {
-  return false;
+  return Boolean(await getSession());
 }
 
 export async function readJson(request) {

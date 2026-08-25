@@ -11,6 +11,7 @@ import { gui } from "./gui";
 import { kanban } from "./kanban";
 import { write } from "./write";
 import { login } from "./login";
+import { logout } from "./logout";
 import { echo } from "./echo";
 import { pwd } from "./pwd";
 import { date } from "./date";
@@ -33,6 +34,7 @@ const commands = {
   "/kanban": kanban,
   "/write": write,
   "/login": login,
+  "/logout": logout,
 };
 
 export const commandNames = Object.keys(commands);
