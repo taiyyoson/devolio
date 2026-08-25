@@ -9,6 +9,7 @@ import { open } from "./open";
 import { theme } from "./theme";
 import { gui } from "./gui";
 import { kanban } from "./kanban";
+import { write } from "./write";
 import { login } from "./login";
 import { echo } from "./echo";
 import { pwd } from "./pwd";
@@ -30,6 +31,7 @@ const commands = {
   date,
   history,
   "/kanban": kanban,
+  "/write": write,
   "/login": login,
 };
 

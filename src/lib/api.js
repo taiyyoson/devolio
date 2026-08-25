@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { allowRequest } from "@/lib/rate-limit";
+import { isValidSlug } from "@/lib/blog";
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -8,6 +9,10 @@ export const LIMITS = {
   title: 200,
   description: 5000,
   position: 10000,
+  summary: 500,
+  content: 200_000,
+  tag: 40,
+  tagCount: 10,
 };
 
 export function fail(status, message) {
@@ -16,19 +21,45 @@ export function fail(status, message) {
 
 /**
  * Resolve the caller's Supabase client and user, or the error response to
- * return. Uses getUser(), which revalidates the JWT server-side; getSession()
- * would trust an unverified cookie.
+ * return.
+ *
+ * Two separate gates, and the second is the one that matters. `getUser()`
+ * revalidates the JWT server-side (getSession would trust an unverified
+ * cookie), but *any* Supabase account in the project passes it — the anon key
+ * is public, so if signups are enabled that is anyone. Authorization is the
+ * OWNER_USER_ID comparison, and it fails closed when the var is unset rather
+ * than degrading to "any logged-in user".
  */
-export async function authenticate() {
+export async function authenticate({ max, windowMs } = {}) {
   const supabase = await createClient();
+  if (!supabase) return { error: fail(503, "Authentication is not configured") };
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) return { error: fail(401, "Unauthorized") };
-  if (!allowRequest(user.id)) return { error: fail(429, "Too many requests") };
+
+  const owner = process.env.OWNER_USER_ID;
+  if (!owner || user.id !== owner) return { error: fail(403, "Forbidden") };
+
+  if (!allowRequest(user.id, { max, windowMs })) {
+    return { error: fail(429, "Too many requests") };
+  }
 
   return { supabase, user };
+}
+
+export async function isOwner() {
+  const supabase = await createClient();
+  if (!supabase) return false;
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const owner = process.env.OWNER_USER_ID;
+  return Boolean(user && owner && user.id === owner);
 }
 
 export async function readJson(request) {
@@ -69,6 +100,19 @@ const FIELD_VALIDATORS = {
   column_id: isUuid,
   board_id: isUuid,
   id: isUuid,
+  slug: isValidSlug,
+  summary: (v) => isBoundedString(v, LIMITS.summary),
+  content: (v) => isBoundedString(v, LIMITS.content) && v.trim().length > 0,
+  tags: (v) =>
+    Array.isArray(v) &&
+    v.length <= LIMITS.tagCount &&
+    v.every((t) => isBoundedString(t, LIMITS.tag) && /^[\w -]+$/.test(t)),
+  draft: (v) => typeof v === "boolean",
+  overwrite: (v) => typeof v === "boolean",
+  // Shape first, then parse. Date.parse alone is not a validator: V8 accepts a
+  // trailing parenthesized comment and ignores its contents, newlines included.
+  date: (v) =>
+    typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v)),
 };
 
 /**

@@ -18,6 +18,7 @@ export function help() {
       { type: "output", content: "  gui               Switch to traditional portfolio view" },
       { type: "output", content: "  /kanban           Open kanban board (admin only)" },
       { type: "output", content: "  /login            Admin login" },
+      { type: "output", content: "  /write            New blog post (admin only)" },
     ],
   };
 }
