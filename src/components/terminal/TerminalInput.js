@@ -71,7 +71,6 @@ export default function TerminalInput({
   onChange,
   onSubmit,
   onShowCompletions,
-  loginMode,
   commands = [],
   fileSystem,
   commandHistory = [],
@@ -101,7 +100,6 @@ export default function TerminalInput({
 
     if (e.key === "Tab") {
       e.preventDefault();
-      if (loginMode) return;
       const { matches, token, isCommand } = getCompletions(value, commands, fileSystem, cwd);
       if (matches.length === 0) return;
 
@@ -141,7 +139,7 @@ export default function TerminalInput({
 
     if (e.key === "ArrowUp") {
       e.preventDefault();
-      if (loginMode || commandHistory.length === 0) return;
+      if (commandHistory.length === 0) return;
       const newIndex = historyIndexRef.current + 1;
       if (newIndex >= commandHistory.length) return;
       if (historyIndexRef.current === -1) {
@@ -154,7 +152,6 @@ export default function TerminalInput({
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      if (loginMode) return;
       const newIndex = historyIndexRef.current - 1;
       if (newIndex < -1) return;
       setHistoryIndex(newIndex);
@@ -167,28 +164,16 @@ export default function TerminalInput({
     }
   }
 
-  const promptLabel = loginMode === "email"
-    ? "email: "
-    : loginMode === "password"
-    ? "password: "
-    : null;
-
   return (
     <div className="flex gap-0 items-center whitespace-pre" onClick={() => inputRef.current?.focus()}>
-      {promptLabel ? (
-        <span className="text-yellow-400">{promptLabel}</span>
-      ) : (
-        <>
-          <span className="text-green-400">taiyo@devolio</span>
-          <span className="text-gray-500">:</span>
-          <span className="text-blue-400">{cwd}</span>
-          <span className="text-gray-500">$ </span>
-        </>
-      )}
+      <span className="text-green-400">taiyo@devolio</span>
+      <span className="text-gray-500">:</span>
+      <span className="text-blue-400">{cwd}</span>
+      <span className="text-gray-500">$ </span>
       <div className="relative flex-1 min-w-0">
         <input
           ref={inputRef}
-          type={loginMode === "password" ? "password" : "text"}
+          type="text"
           value={value}
           onChange={(e) => {
             historyIndexRef.current = -1;
@@ -198,13 +183,13 @@ export default function TerminalInput({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           className="absolute inset-0 w-full bg-transparent text-gray-300 outline-none caret-transparent"
-          aria-label={promptLabel ? promptLabel.trim() : "Terminal input"}
+          aria-label="Terminal input"
           autoComplete="off"
           autoCapitalize="off"
           autoCorrect="off"
           spellCheck={false}
         />
-        <span className="invisible">{loginMode === "password" ? "*".repeat(value.length) : value}</span>
+        <span className="invisible">{value}</span>
         {focused && (
           <span className="inline-block w-[0.6em] h-[1.1em] bg-gray-300 align-middle animate-blink" />
         )}

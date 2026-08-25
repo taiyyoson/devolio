@@ -5,7 +5,6 @@ import TerminalLine from "./terminal/TerminalLine";
 import TerminalInput from "./terminal/TerminalInput";
 import { buildFileSystem } from "@/lib/filesystem";
 import { executeCommand, commandNames } from "@/lib/commands";
-import { createClient } from "@/lib/supabase/client";
 
 const fileSystem = buildFileSystem();
 
@@ -21,8 +20,6 @@ const initialState = {
   cwd: "~",
   isAuthenticated: false,
   commandHistory: [],
-  loginMode: null, // null | "email" | "password"
-  loginEmail: "",
 };
 
 function reducer(state, action) {
@@ -32,35 +29,6 @@ function reducer(state, action) {
 
     case "SUBMIT": {
       const input = state.currentInput.trim();
-
-      // Handle login flow
-      if (state.loginMode === "email") {
-        return {
-          ...state,
-          history: [
-            ...state.history,
-            { type: "output", content: `email: ${input}` },
-          ],
-          currentInput: "",
-          loginMode: "password",
-          loginEmail: input,
-        };
-      }
-
-      if (state.loginMode === "password") {
-        return {
-          ...state,
-          history: [
-            ...state.history,
-            { type: "output", content: "password: " + "*".repeat(input.length) },
-            { type: "system", content: "Authenticating..." },
-          ],
-          currentInput: "",
-          loginMode: null,
-          _pendingLogin: { email: state.loginEmail, password: input },
-          loginEmail: "",
-        };
-      }
 
       // Regular command execution
       const promptLine = { type: "prompt", cwd: state.cwd, content: input };
@@ -84,8 +52,6 @@ function reducer(state, action) {
       // Handle special actions
       if (result.action === "clear") {
         newState.history = [];
-      } else if (result.action === "login") {
-        newState.loginMode = "email";
       } else if (result.action === "open" && result.actionData) {
         // Side effect handled in component via useEffect
         newState._pendingOpen = result.actionData;
@@ -99,20 +65,7 @@ function reducer(state, action) {
     }
 
     case "CLEAR_SIDE_EFFECTS":
-      return { ...state, _pendingOpen: undefined, _pendingTheme: undefined, _pendingLogin: undefined, _pendingGui: undefined };
-
-    case "LOGIN_SUCCESS":
-      return {
-        ...state,
-        isAuthenticated: true,
-        history: [...state.history, { type: "system", content: "Authenticated as admin." }],
-      };
-
-    case "LOGIN_FAILURE":
-      return {
-        ...state,
-        history: [...state.history, { type: "error", content: `Authentication failed: ${action.message}` }],
-      };
+      return { ...state, _pendingOpen: undefined, _pendingTheme: undefined, _pendingGui: undefined };
 
     case "SET_AUTH":
       return { ...state, isAuthenticated: action.value };
@@ -143,15 +96,6 @@ export default function Terminal({ onToggleView }) {
     }
   }, [state.history]);
 
-  // Check existing session on mount
-  useEffect(() => {
-    const supabase = createClient();
-    if (!supabase) return;
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) dispatch({ type: "SET_AUTH", value: true });
-    });
-  }, []);
-
   // Handle side effects (open URL, toggle theme, login)
   useEffect(() => {
     if (state._pendingOpen) {
@@ -168,23 +112,7 @@ export default function Terminal({ onToggleView }) {
       dispatch({ type: "CLEAR_SIDE_EFFECTS" });
       if (onToggleView) onToggleView();
     }
-    if (state._pendingLogin) {
-      const { email, password } = state._pendingLogin;
-      dispatch({ type: "CLEAR_SIDE_EFFECTS" });
-      const supabase = createClient();
-      if (!supabase) {
-        dispatch({ type: "LOGIN_FAILURE", message: "Supabase not configured" });
-        return;
-      }
-      supabase.auth.signInWithPassword({ email, password }).then(({ error }) => {
-        if (error) {
-          dispatch({ type: "LOGIN_FAILURE", message: error.message });
-        } else {
-          dispatch({ type: "LOGIN_SUCCESS" });
-        }
-      });
-    }
-  }, [state._pendingOpen, state._pendingTheme, state._pendingLogin, state._pendingGui, onToggleView]);
+  }, [state._pendingOpen, state._pendingTheme, state._pendingGui, onToggleView]);
 
   const handleSubmit = useCallback(() => {
     dispatch({ type: "SUBMIT" });
@@ -213,7 +141,6 @@ export default function Terminal({ onToggleView }) {
           onChange={handleChange}
           onSubmit={handleSubmit}
           onShowCompletions={handleShowCompletions}
-          loginMode={state.loginMode}
           commands={commandNames}
           fileSystem={fileSystem}
           commandHistory={state.commandHistory}
@@ -225,7 +152,7 @@ export default function Terminal({ onToggleView }) {
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <span className="text-green-400">$</span>
           <input
-            type={state.loginMode === "password" ? "password" : "text"}
+            type="text"
             value={state.currentInput}
             onChange={(e) => handleChange(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}

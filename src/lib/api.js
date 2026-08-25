@@ -1,4 +1,3 @@
-import { createClient } from "@/lib/supabase/server";
 import { allowRequest } from "@/lib/rate-limit";
 import { isValidSlug } from "@/lib/blog";
 
@@ -20,46 +19,20 @@ export function fail(status, message) {
 }
 
 /**
- * Resolve the caller's Supabase client and user, or the error response to
- * return.
+ * There is no identity provider right now — Supabase was removed and GitHub
+ * OAuth has not landed yet. Both gates deny unconditionally rather than
+ * degrading to "allow", so publishing is closed until auth is rebuilt.
  *
- * Two separate gates, and the second is the one that matters. `getUser()`
- * revalidates the JWT server-side (getSession would trust an unverified
- * cookie), but *any* Supabase account in the project passes it — the anon key
- * is public, so if signups are enabled that is anyone. Authorization is the
- * OWNER_USER_ID comparison, and it fails closed when the var is unset rather
- * than degrading to "any logged-in user".
+ * `allowRequest` stays imported because the shape of these functions is what
+ * the OAuth implementation slots into: resolve a session, key the rate limiter
+ * on a stable user id, return { user } or { error }.
  */
-export async function authenticate({ max, windowMs } = {}) {
-  const supabase = await createClient();
-  if (!supabase) return { error: fail(503, "Authentication is not configured") };
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return { error: fail(401, "Unauthorized") };
-
-  const owner = process.env.OWNER_USER_ID;
-  if (!owner || user.id !== owner) return { error: fail(403, "Forbidden") };
-
-  if (!allowRequest(user.id, { max, windowMs })) {
-    return { error: fail(429, "Too many requests") };
-  }
-
-  return { supabase, user };
+export async function authenticate() {
+  return { error: fail(503, "Authentication is not configured") };
 }
 
 export async function isOwner() {
-  const supabase = await createClient();
-  if (!supabase) return false;
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const owner = process.env.OWNER_USER_ID;
-  return Boolean(user && owner && user.id === owner);
+  return false;
 }
 
 export async function readJson(request) {
@@ -73,8 +46,8 @@ export async function readJson(request) {
 }
 
 /**
- * Log the real Supabase error but return a generic message — error.message can
- * carry table names, constraint names, and column details.
+ * Log the real error but return a generic message — upstream messages can carry
+ * repo paths and internal detail.
  */
 export function dbError(context, error) {
   console.error(`[api] ${context}:`, error.message);
