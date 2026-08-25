@@ -11,9 +11,10 @@ npm run dev        # http://localhost:3000
 
 If that works, you're back. Everything else is detail.
 
-Authentication is currently unavailable — Supabase was removed and GitHub OAuth is
-not built yet, so `/login` and `/write` are closed. Everything else (terminal,
-portfolio, blog) works with no configuration at all.
+Auth is GitHub OAuth and login lives only in the terminal: type `/login`. It needs
+`GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GITHUB_OWNER`, and `AUTH_SECRET` in
+`.env.local` — see [blogging.md](./blogging.md). Without them the site still runs;
+only `/login` and `/write` go dark.
 
 ## What this project is
 
@@ -47,6 +48,7 @@ Stack: Next.js 16 · React 19 · Tailwind v4.
 src/app/          page.js is the portfolio; blog/ and write/ are real routes
 src/components/   Terminal.js is the core; portfolio/ is the gui view
 src/data/         content: projects.json, contact.js — edit these, not components
+src/lib/session.js signed session cookie (HMAC, no dependency)
 src/lib/api.js    auth, validation, and error helpers for the API routes
 src/lib/blog.js   reads and parses the markdown posts
 src/lib/github.js commits posts back to the repo
