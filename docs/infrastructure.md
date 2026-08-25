@@ -10,10 +10,9 @@ Who runs what, and which dashboard to open when something breaks.
 |---|---|---|
 | Domain `taiyyoson.com` | **Vercel** (registrar) | https://vercel.com/domains |
 | Hosting / deploys | **Vercel** | https://vercel.com/dashboard |
-| Database + auth | **Supabase** | https://supabase.com/dashboard |
 | Source | **GitHub** `taiyyoson/devolio` | https://github.com/taiyyoson/devolio |
 
-Two logins total: Vercel and Supabase. That's the whole surface area.
+One login: Vercel. There is no database and no auth provider.
 
 ## Domain — bought at Vercel
 
@@ -53,66 +52,37 @@ Playwright on Chromium. A Vercel deploy succeeding does not mean CI passed, and 
 versa — they're independent.
 
 **Environment variables live in Vercel**, not in the repo. `.env*` is gitignored. If
-the deployed site loses auth or kanban but local works, suspect missing/stale env
+the deployed site loses auth or publishing but local works, suspect missing/stale env
 vars in Vercel project settings first.
 
-## Database — Supabase
+## Data — there isn't any
 
-Project ref: **`jkqazldcmdynmpetjjdu`**
-Dashboard: https://supabase.com/dashboard/project/jkqazldcmdynmpetjjdu
+**No database.** Supabase was removed entirely and the project can be deleted. Blog
+posts are markdown files in `src/content/blog/`, read at build time — see
+[blogging.md](./blogging.md).
 
-(That ref is safe to write down — it's part of the `NEXT_PUBLIC_SUPABASE_URL` and
-already ships in the browser bundle. The keys are not here; they live in `.env.local`
-and in Vercel.)
+## Authentication — currently none
 
-Used for two things:
-
-1. **Auth** — the terminal's `login` command signs in via
-   `supabase.auth.signInWithPassword`. Single admin user, that's you.
-2. **Kanban board** — a private board behind that login.
-
-### Schema
-
-Defined in [`supabase/schema.sql`](../supabase/schema.sql). Three tables:
-
-```
-boards   → columns → cards
-```
-
-Every table has **Row Level Security on**, with policies scoping rows to
-`auth.uid()`. Cards and columns check ownership by walking back up to the parent
-board. If a query returns an empty array when you know rows exist, you're almost
-certainly unauthenticated or hitting RLS — that's the first thing to check, not the
-last.
-
-The schema file is the source of truth but **is not auto-applied**. It's meant to be
-pasted into the Supabase SQL editor. If you change it, you have to run it yourself.
+Supabase provided identity; it is gone, and GitHub OAuth has not been built yet.
+`authenticate()` returns 503 and `isOwner()` returns false unconditionally, so
+`/write` and `POST /api/posts` are closed. Publishing a post means committing a
+markdown file by hand until OAuth lands.
 
 ### How it's wired
 
 | File | Role |
 |---|---|
-| `src/lib/supabase/client.js` | Browser client. Returns `null` if env vars are missing. |
-| `src/lib/supabase/server.js` | Server client. |
-| `src/proxy.js` | Refreshes the session on every request. Skips cleanly if env vars are absent. |
-| `src/lib/api.js` | Auth guard, field allowlists, generic error responses. |
+| `src/lib/api.js` | Auth stubs, field allowlists, generic error responses. |
 | `src/lib/rate-limit.js` | Per-user request cap, in-memory and per-instance. |
-| `src/app/api/kanban/*/route.js` | Board / column / card endpoints. |
-
-The `null`-when-unconfigured pattern is deliberate: the site degrades to a working
-static portfolio instead of crashing when Supabase isn't set up.
+| `src/app/api/posts/route.js` | Commits a blog post to the repo. 503s while auth is absent. |
+| `src/lib/github.js` | GitHub contents API client. Reads its token at call time. |
 
 ## Local setup
 
-`.env.local` is gitignored and holds:
+Nothing is required to run the site — `npm install && npm run dev` is enough.
 
-```
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-```
-
-Both values come from Supabase → Project Settings → API. `.env.example` has the
-shape without the values.
+Publishing needs `GITHUB_TOKEN` and `GITHUB_REPO` (see [blogging.md](./blogging.md)),
+though it is closed regardless until authentication exists.
 
 ## When something breaks
 
@@ -121,6 +91,7 @@ shape without the values.
 | Site down / 404 on a route | Vercel → Deployments (did the last one fail?) |
 | Domain not resolving, cert warning | Vercel → Domains |
 | Renewal / billing on the domain | Vercel → Domains, and Settings → Billing |
-| Login fails, kanban empty | Supabase → Auth, then check RLS policies |
+| `/write` 503s on publish | `GITHUB_TOKEN` / `GITHUB_REPO` missing in Vercel |
+| Published post not live | Check the commit landed, then Vercel → Deployments |
 | Works locally, broken deployed | Vercel env vars |
 | CI red but site is fine | GitHub Actions — separate from deploys |

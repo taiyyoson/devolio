@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import PortfolioNav from "./PortfolioNav";
 import PortfolioHero from "./PortfolioHero";
 import PortfolioProjects from "./PortfolioProjects";
@@ -11,8 +12,10 @@ const TABS = [
   { id: "about", label: "About" },
   { id: "projects", label: "Projects" },
   { id: "experience", label: "Experience" },
-  { id: "blogs", label: "Blogs" },
 ];
+
+// Blog posts are real routes, not tab state — they need shareable URLs.
+const LINKS = [{ href: "/blog", label: "Blogs" }];
 
 export default function PortfolioView({ onSwitchToTerminal }) {
   const [tab, setTab] = useState("about");
@@ -47,6 +50,16 @@ export default function PortfolioView({ onSwitchToTerminal }) {
                     />
                     {label}
                   </button>
+                ))}
+                {LINKS.map(({ href, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="flex items-center gap-2 text-muted hover:text-foreground transition-colors text-left"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-transparent" />
+                    {label}
+                  </Link>
                 ))}
                 <button
                   onClick={onSwitchToTerminal}

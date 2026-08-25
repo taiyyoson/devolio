@@ -1,5 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
 import { allowRequest } from "@/lib/rate-limit";
+import { isValidSlug } from "@/lib/blog";
+import { getSession, isAuthConfigured } from "@/lib/session";
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -8,27 +9,34 @@ export const LIMITS = {
   title: 200,
   description: 5000,
   position: 10000,
+  summary: 500,
+  content: 200_000,
+  tag: 40,
+  tagCount: 10,
 };
 
 export function fail(status, message) {
   return Response.json({ error: message }, { status });
 }
 
-/**
- * Resolve the caller's Supabase client and user, or the error response to
- * return. Uses getUser(), which revalidates the JWT server-side; getSession()
- * would trust an unverified cookie.
- */
-export async function authenticate() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export async function authenticate({ max, windowMs } = {}) {
+  if (!isAuthConfigured()) return { error: fail(503, "Authentication is not configured") };
 
-  if (!user) return { error: fail(401, "Unauthorized") };
-  if (!allowRequest(user.id)) return { error: fail(429, "Too many requests") };
+  const session = await getSession();
+  if (!session) return { error: fail(401, "Unauthorized") };
 
-  return { supabase, user };
+  // Keyed on the GitHub numeric id, not the login: ids are immutable, and a
+  // recycled login could otherwise inherit another identity's bucket. Namespaced
+  // because the OAuth callback rate-limits by IP in the same Map.
+  if (!allowRequest(`gh:${session.sub}`, { max, windowMs })) {
+    return { error: fail(429, "Too many requests") };
+  }
+
+  return { user: { id: session.sub, login: session.login } };
+}
+
+export async function isOwner() {
+  return Boolean(await getSession());
 }
 
 export async function readJson(request) {
@@ -42,8 +50,8 @@ export async function readJson(request) {
 }
 
 /**
- * Log the real Supabase error but return a generic message — error.message can
- * carry table names, constraint names, and column details.
+ * Log the real error but return a generic message — upstream messages can carry
+ * repo paths and internal detail.
  */
 export function dbError(context, error) {
   console.error(`[api] ${context}:`, error.message);
@@ -69,6 +77,19 @@ const FIELD_VALIDATORS = {
   column_id: isUuid,
   board_id: isUuid,
   id: isUuid,
+  slug: isValidSlug,
+  summary: (v) => isBoundedString(v, LIMITS.summary),
+  content: (v) => isBoundedString(v, LIMITS.content) && v.trim().length > 0,
+  tags: (v) =>
+    Array.isArray(v) &&
+    v.length <= LIMITS.tagCount &&
+    v.every((t) => isBoundedString(t, LIMITS.tag) && /^[\w -]+$/.test(t)),
+  draft: (v) => typeof v === "boolean",
+  overwrite: (v) => typeof v === "boolean",
+  // Shape first, then parse. Date.parse alone is not a validator: V8 accepts a
+  // trailing parenthesized comment and ignores its contents, newlines included.
+  date: (v) =>
+    typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v)),
 };
 
 /**

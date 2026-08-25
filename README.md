@@ -39,7 +39,7 @@ tab-complete and arrow-key history supported.
 
 ## stack
 
-next.js 16 · react 19 · tailwind v4 · jetbrains mono · supabase
+next.js 16 · react 19 · tailwind v4 · jetbrains mono
 
 ## run
 
