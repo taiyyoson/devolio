@@ -24,7 +24,7 @@ export default function PostEditor() {
   const [slugTouched, setSlugTouched] = useState(false);
   const [summary, setSummary] = useState("");
   const [tags, setTags] = useState("");
-  const [draft, setDraft] = useState(true);
+  const [draft, setDraft] = useState(false);
   const [content, setContent] = useState("");
   const [status, setStatus] = useState(null);
   const [busy, setBusy] = useState(false);
