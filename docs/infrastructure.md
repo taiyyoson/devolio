@@ -53,7 +53,7 @@ Playwright on Chromium. A Vercel deploy succeeding does not mean CI passed, and 
 versa — they're independent.
 
 **Environment variables live in Vercel**, not in the repo. `.env*` is gitignored. If
-the deployed site loses auth or kanban but local works, suspect missing/stale env
+the deployed site loses auth or publishing but local works, suspect missing/stale env
 vars in Vercel project settings first.
 
 ## Database — Supabase
@@ -65,28 +65,20 @@ Dashboard: https://supabase.com/dashboard/project/jkqazldcmdynmpetjjdu
 already ships in the browser bundle. The keys are not here; they live in `.env.local`
 and in Vercel.)
 
-Used for two things:
-
-1. **Auth** — the terminal's `login` command signs in via
-   `supabase.auth.signInWithPassword`. Single admin user, that's you.
-2. **Kanban board** — a private board behind that login.
+Used for **auth only**. The terminal's `/login` command signs in via
+`supabase.auth.signInWithPassword`; a valid session is what unlocks `/write`.
+Single admin user, that's you.
 
 ### Schema
 
-Defined in [`supabase/schema.sql`](../supabase/schema.sql). Three tables:
+**No application tables are in use.** The kanban board was removed and its tables
+(`boards`, `columns`, `cards`) are abandoned —
+[`supabase/schema.sql`](../supabase/schema.sql) now holds the `DROP TABLE`
+statements to clean them up. Nothing there is auto-applied; paste it into the
+Supabase SQL editor by hand.
 
-```
-boards   → columns → cards
-```
-
-Every table has **Row Level Security on**, with policies scoping rows to
-`auth.uid()`. Cards and columns check ownership by walking back up to the parent
-board. If a query returns an empty array when you know rows exist, you're almost
-certainly unauthenticated or hitting RLS — that's the first thing to check, not the
-last.
-
-The schema file is the source of truth but **is not auto-applied**. It's meant to be
-pasted into the Supabase SQL editor. If you change it, you have to run it yourself.
+Blog posts are **not** in the database. They're markdown files in git — see
+[blogging.md](./blogging.md).
 
 ### How it's wired
 
@@ -97,7 +89,8 @@ pasted into the Supabase SQL editor. If you change it, you have to run it yourse
 | `src/proxy.js` | Refreshes the session on every request. Skips cleanly if env vars are absent. |
 | `src/lib/api.js` | Auth guard, field allowlists, generic error responses. |
 | `src/lib/rate-limit.js` | Per-user request cap, in-memory and per-instance. |
-| `src/app/api/kanban/*/route.js` | Board / column / card endpoints. |
+| `src/app/api/posts/route.js` | Commits a blog post to the repo. 401s before parsing the body. |
+| `src/lib/github.js` | GitHub contents API client. Reads its token at call time. |
 
 The `null`-when-unconfigured pattern is deliberate: the site degrades to a working
 static portfolio instead of crashing when Supabase isn't set up.
@@ -121,6 +114,8 @@ shape without the values.
 | Site down / 404 on a route | Vercel → Deployments (did the last one fail?) |
 | Domain not resolving, cert warning | Vercel → Domains |
 | Renewal / billing on the domain | Vercel → Domains, and Settings → Billing |
-| Login fails, kanban empty | Supabase → Auth, then check RLS policies |
+| Login fails | Supabase → Auth (is the user still there?) |
+| `/write` 503s on publish | `GITHUB_TOKEN` / `GITHUB_REPO` missing in Vercel |
+| Published post not live | Check the commit landed, then Vercel → Deployments |
 | Works locally, broken deployed | Vercel env vars |
 | CI red but site is fine | GitHub Actions — separate from deploys |
