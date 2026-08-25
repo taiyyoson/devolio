@@ -3,7 +3,7 @@ title: "Hello, world"
 date: 2026-08-24
 summary: "Why this blog exists, and how it works under the hood."
 tags: [meta]
-draft: false
+draft: true
 ---
 
 This is the first post. Mostly a placeholder so the blog has something to render,
