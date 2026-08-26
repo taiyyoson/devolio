@@ -1,29 +1,9 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-
-function subscribeToTheme(onStoreChange) {
-  const observer = new MutationObserver(onStoreChange);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["class"],
-  });
-  return () => observer.disconnect();
-}
-
-const getIsDark = () => document.documentElement.classList.contains("dark");
-
-// Matches the inline script in layout.js, which defaults to dark.
-const getIsDarkOnServer = () => true;
+import { useIsDark, toggleTheme } from "@/lib/useIsDark";
 
 export default function PortfolioNav({ onSwitchToTerminal }) {
-  const isDark = useSyncExternalStore(subscribeToTheme, getIsDark, getIsDarkOnServer);
-
-  function toggleTheme() {
-    const nextDark = !getIsDark();
-    document.documentElement.classList.toggle("dark", nextDark);
-    localStorage.setItem("theme", nextDark ? "dark" : "light");
-  }
+  const isDark = useIsDark();
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-sm bg-background/80 border-b border-border">

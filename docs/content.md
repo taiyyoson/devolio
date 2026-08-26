@@ -23,26 +23,117 @@ filesystem, which is why one edit updates both views.
 
 ## Projects — one file
 
-`src/data/projects.json`, one object per project:
+`src/data/projects.json` is the whole store. One object per project:
 
 ```json
 {
   "slug": "nala",
   "title": "Nala",
-  "description": "One-liner shown in the GUI list and the terminal README.",
-  "longDescription": "Long text. Terminal only — cat projects/<slug>/README.md.",
+  "description": "One-liner shown on the card and in the terminal README.",
+  "longDescription": "Long text, rendered as the Overview section on both views.",
   "tags": ["Python", "RAG"],
   "github": "https://github.com/...",
   "live": null,
-  "image": null,
-  "featured": true
+  "thumbnail": null,
+  "featured": true,
+
+  "context": {
+    "company": "Where it was built",
+    "team": "Team size and composition",
+    "role": "Your scope on it",
+    "timeline": "When"
+  },
+  "problem": "What was broken.",
+  "solution": "The approach taken.",
+  "impact": ["Result bullet", "Another result"],
+  "diagrams": []
 }
 ```
 
-- `title` and `description` are what appear in both views
-- `github`, if set, turns the title into a link in the GUI
+- `title` and `description` appear in both views
 - `featured: true` renders a `*` next to it
-- `slug` is the terminal path: `cd projects/<slug>`
+- `slug` is both the terminal path (`cd projects/<slug>`) and the web route
+  (`/projects/<slug>`)
+- `thumbnail` is a path under `public/images/projects/`. Leave it `null` and the
+  card falls back to a generated initials tile, so a missing image never looks
+  broken
+- `context`, `problem`, `solution`, `impact` and `diagrams` are all **optional** —
+  a project missing them just renders fewer sections
+- **`github` is not a link on the index.** The card links to the case study;
+  GitHub lives on that page
+
+### TODO values are dropped, not rendered
+
+Any string starting with `TODO` is treated as an unfilled placeholder and is
+**omitted from both the web page and the terminal** — the field, and its section
+if nothing else fills it, simply does not appear. So an unfinished project reads
+as shorter rather than as unfinished.
+
+This means you can leave reminders to yourself directly in the data:
+
+```json
+"impact": [
+  "Random Forest 99% accuracy, Logistic Regression 94%.",
+  "TODO: retention numbers once the study closes"
+]
+```
+
+The first bullet renders; the second does not. Delete the `TODO` prefix when you
+fill it in and it appears.
+
+### Diagrams
+
+`diagrams` is an array of objects rendered under an **Architecture** heading on
+`/projects/<slug>`. The `mermaid` field is an array of lines — joined with
+newlines before rendering — so the source stays readable and diffs one line at a
+time instead of as one long escaped string:
+
+```json
+"diagrams": [
+  {
+    "title": "Three-layer architecture",
+    "caption": "Optional prose under the diagram.",
+    "mermaid": [
+      "flowchart TD",
+      "  A[\"Client\"] --> B[\"API\"]",
+      "  B --> C[(\"PostgreSQL\")]"
+    ]
+  }
+]
+```
+
+`title` and `caption` are optional. A plain string works in place of the array if
+the diagram is a one-liner. Mermaid diagrams render client-side and follow the
+light/dark theme; see `nala` (flowchart) and `roblox-studio-mcp` (sequence
+diagram) for working examples.
+
+#### Image figures
+
+An entry can carry an `image` instead of `mermaid`, so the same array holds
+screenshots, exported diagrams, and build-process shots:
+
+```json
+"diagrams": [
+  {
+    "title": "Schema",
+    "caption": "Optional prose under the image.",
+    "image": "/images/projects/nala-schema.png",
+    "width": 1600,
+    "height": 900
+  }
+]
+```
+
+`width` and `height` only set the intrinsic aspect ratio so the slot is reserved
+before the file loads — they should match the real proportions, but the image
+always renders at the column width. They default to 1600×900 if omitted, which
+will make a differently-shaped image jump on load.
+
+Mermaid and image entries can be mixed in one array and render in the order
+written.
+
+**Terminal caveat:** diagrams and images are **web only**. The terminal README
+shows the text fields; there is no way to draw either in it.
 
 ## Experience — one file
 

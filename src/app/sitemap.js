@@ -1,4 +1,5 @@
 import { getPosts } from "@/lib/blog";
+import { getProjectSlugs } from "@/lib/projects";
 
 const SITE = "https://taiyyoson.com";
 
@@ -10,6 +11,13 @@ export default function sitemap() {
     priority: 0.6,
   }));
 
+  const projects = getProjectSlugs().map((slug) => ({
+    url: `${SITE}/projects/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
   return [
     {
       url: SITE,
@@ -18,6 +26,7 @@ export default function sitemap() {
       priority: 1,
     },
     { url: `${SITE}/projects`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
+    ...projects,
     { url: `${SITE}/experience`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.9 },
     {
       url: `${SITE}/blog`,

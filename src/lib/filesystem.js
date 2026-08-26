@@ -4,18 +4,51 @@ import { ABOUT_TEXT } from "@/data/about";
 import { CONTACT_TEXT } from "@/data/contact";
 
 const EXPERIENCE_SLUGS = {
-  "Research Assistant": "research-assistant",
+  "VGL Research Assistant": "research-assistant",
   "CS Tutor & Teaching Assistant": "cs-tutor",
   "Founding Executive Director": "hack4impact",
   "Embedded Software Engineering Intern": "fastly",
   "Software Developer Intern": "pacxa",
-  "B.S. Computer Science / M.S. Computer Science (4+1)": "usfca",
+  "B.S. Computer Science": "usfca",
+  "M.S. Computer Science (4+1) (currently on LOA)": "usfca"
 };
+
+const CONTEXT_LABELS = [
+  ["company", "Where"],
+  ["team", "Team "],
+  ["role", "Role "],
+  ["timeline", "When "],
+];
+
+// Placeholder values are authored in projects.json as reminders. Both views drop
+// them, so an unfilled field reads as absent rather than as unfinished copy.
+const isTodo = (value) => typeof value === "string" && value.trimStart().startsWith("TODO");
+const drop = (value) => (!value || isTodo(value) ? null : value);
 
 function formatProject(p) {
   let text = `${p.title}\n${"=".repeat(p.title.length)}\n\n`;
   text += `${p.description}\n\n`;
-  if (p.longDescription) text += `${p.longDescription}\n\n`;
+
+  const rows = CONTEXT_LABELS.filter(([key]) => drop(p.context?.[key]));
+  if (rows.length) {
+    for (const [key, label] of rows) text += `${label}: ${p.context[key]}\n`;
+    text += "\n";
+  }
+
+  const problem = drop(p.problem);
+  const solution = drop(p.solution);
+  const overview = drop(p.longDescription);
+  const impact = (p.impact ?? []).filter((item) => !isTodo(item));
+
+  if (problem) text += `PROBLEM\n${problem}\n\n`;
+  if (solution) text += `SOLUTION\n${solution}\n\n`;
+  if (overview) text += `OVERVIEW\n${overview}\n\n`;
+  if (impact.length) {
+    text += "IMPACT\n";
+    for (const item of impact) text += `  - ${item}\n`;
+    text += "\n";
+  }
+
   text += `Tags: ${p.tags.join(", ")}\n`;
   if (p.github) text += `GitHub: ${p.github}\n`;
   if (p.live) text += `Live:   ${p.live}\n`;
@@ -36,7 +69,7 @@ function formatExperience(e) {
 const PUBLICATION_CONTENT = `Nala: An AI Health Coaching Chatbot
 ====================================
 
-Coauthored publication submitted to ACM CHI 2026.
+Coauthored publication entry submitted to ACM CHI 2026.
 
 Nala is an intelligent health coaching assistant combining RAG-based
 conversational AI with evidence-based wellness coaching. It guides users

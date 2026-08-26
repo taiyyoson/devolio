@@ -1,10 +1,10 @@
 [
   {
-    "role": "Research Assistant",
+    "role": "VGL Research Assistant",
     "company": "University of San Francisco",
     "location": "San Francisco, CA",
     "startDate": "2026-02",
-    "endDate": null,
+    "endDate": "2026-08",
     "description": "Continuing maintenance on the Nala health coaching project and beginning a master's thesis. Exploring cloud and systems research directions.",
     "tags": ["Research", "Python", "Cloud", "Systems"]
   },
@@ -13,7 +13,7 @@
     "company": "University of San Francisco",
     "location": "San Francisco, CA",
     "startDate": "2025-01",
-    "endDate": null,
+    "endDate": "2026-05",
     "description": "Tutoring students in debugging, project management, and exam prep. Hosting workshops on SSH and Git basics, developing lesson plans and coding exercises to reinforce core CS concepts.",
     "tags": ["Teaching", "Git", "Debugging"]
   },
@@ -22,7 +22,7 @@
     "company": "Hack4Impact USF",
     "location": "San Francisco, CA",
     "startDate": "2024-01",
-    "endDate": null,
+    "endDate": "2026-05",
     "description": "Founded the university's 3rd CS club, mimicking a professional environment to give students real-world exposure. Teaching a React/Next.js/AWS stack to build software for local nonprofits. Conducting research on nonprofit tech utilization with a focus on AI applications in gerrymandering.",
     "tags": ["React", "Next.js", "AWS", "Leadership"]
   },
@@ -45,12 +45,21 @@
     "tags": ["Power Apps", "Power Automate", "Office 365"]
   },
   {
-    "role": "B.S. Computer Science / M.S. Computer Science (4+1)",
+    "role": "B.S. Computer Science",
     "company": "University of San Francisco",
     "location": "San Francisco, CA",
     "startDate": "2022-08",
+    "endDate": "2026-05",
+    "description": "GPA: 3.69. Relevant coursework: C & Systems Programming, Data Structures & Algorithms, Full-Stack Web Dev, Computer Architecture.",
+    "tags": ["Systems", "Full-Stack", "Algorithms"]
+  },
+  {
+    "role": "M.S. Computer Science (4+1) (currently on LOA)",
+    "company": "University of San Francisco",
+    "location": "San Francisco, CA",
+    "startDate": "2026-08",
     "endDate": "2027-05",
-    "description": "B.S. GPA: 3.64, M.S. GPA: 4.0. Coursework includes Data Structures & Algorithms, C & Systems Programming, Full-Stack Web Dev, Foundations of AI & ML, AI Redistricting, Computer Networks, and Software Development.",
-    "tags": ["AI/ML", "Systems", "Full-Stack", "Algorithms"]
+    "description": "GPA: 3.67. Relevant coursework: AI Foundations, ML Foundations, AI Redistricting, Algorithms, Computer Networks, Systems Foundations.",
+    "tags": ["AI/ML", "Systems", "Algorithms"]
   }
 ]
