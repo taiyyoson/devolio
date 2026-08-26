@@ -52,13 +52,6 @@ test.describe("Project detail", () => {
     expect(text).toContain("Overview");
   });
 
-  test("renders context rows that carry a real value", async ({ page }) => {
-    await page.goto("/projects/roblox-studio-mcp");
-    const text = await page.textContent("body");
-    expect(text).toContain("My role");
-    expect(text).toContain("Personal project");
-  });
-
   // TODO values are authored in projects.json as reminders. They must never
   // reach a rendered page — an unfilled field reads as absent, not unfinished.
   test("no TODO placeholder leaks onto any project page", async ({ page }) => {
@@ -69,10 +62,27 @@ test.describe("Project detail", () => {
     }
   });
 
-  test("a project whose context is entirely TODO renders no context row", async ({ page }) => {
-    await page.goto("/projects/nala");
-    const text = await page.textContent("body");
-    expect(text).not.toContain("My role");
+  // Derived from the data rather than pinned to one project, so filling in a
+  // TODO field in projects.json does not break the test.
+  test("context rows match exactly the fields carrying a real value", async ({ page }) => {
+    const LABELS = [
+      ["company", "Where"],
+      ["team", "Team"],
+      ["role", "My role"],
+      ["timeline", "When"],
+    ];
+
+    for (const project of projects) {
+      await page.goto(`/projects/${project.slug}`);
+
+      const expected = LABELS.filter(([key]) => {
+        const value = project.context?.[key];
+        return value && !String(value).trimStart().startsWith("TODO");
+      }).map(([, label]) => label);
+
+      const rendered = await page.locator("article dl dt").allTextContents();
+      expect(rendered, `${project.slug} context rows`).toEqual(expected);
+    }
   });
 
   test("renders a mermaid diagram as inline SVG", async ({ page }) => {

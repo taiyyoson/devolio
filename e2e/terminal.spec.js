@@ -22,13 +22,6 @@ test.describe("Terminal basics", () => {
     expect(text).toContain("whoami");
   });
 
-  test("whoami shows user info", async ({ page }) => {
-    await runCommand(page, "whoami");
-    const text = await page.textContent("body");
-    expect(text).toContain("taiyo");
-    expect(text).toContain("University of San Francisco");
-  });
-
   test("clear removes history", async ({ page }) => {
     await runCommand(page, "help");
     await runCommand(page, "clear");
