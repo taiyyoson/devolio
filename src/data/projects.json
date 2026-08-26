@@ -2,21 +2,32 @@
   {
     "slug": "nala",
     "title": "Nala",
-    "description": "An AI health coaching chatbot with a RAG pipeline, mobile app, and a coauthored CHI 2026 publication.",
-    "longDescription": "Nala is an intelligent health coaching assistant that guides users through a structured 4-week wellness program for stress management and habit building. It combines conversational AI with evidence-based coaching via a three-layer architecture: a React Native mobile frontend, a FastAPI backend with SQLAlchemy and PostgreSQL, and a RAG (Retrieval-Augmented Generation) pipeline that retrieves relevant coaching examples from a pgvector database before generating contextually appropriate responses through Claude or GPT. Currently under active maintenance with a coauthored publication submitted to CHI 2026.",
+    "description": "Full-stack web app — AI health coaching chatbot with a RAG pipeline and a coauthored CHI 2026 publication.",
+    "longDescription": "Nala is an intelligent health coaching assistant that guides users through a structured 4-week wellness program for stress management and habit building. It combines conversational AI with evidence-based coaching via a three-layer architecture: a React Native mobile frontend, a FastAPI backend with SQLAlchemy and PostgreSQL, and a RAG (Retrieval-Augmented Generation) pipeline that retrieves relevant coaching examples from a pgvector database before generating contextually appropriate responses through Claude or GPT. Built on real interactions from the Examen Tu Salud program. Currently under active maintenance with a coauthored publication submitted to CHI 2026.",
     "tags": ["Python", "React Native", "FastAPI", "RAG", "PostgreSQL", "pgvector"],
     "github": "https://github.com/taiyyoson/nala",
+    "live": "https://nala-chatbot.expo.app/",
+    "image": null,
+    "featured": true
+  },
+  {
+    "slug": "roblox-studio-mcp",
+    "title": "Roblox Studio MCP",
+    "description": "MCP integration server — Lets a model author and run Luau inside a live Roblox Studio session.",
+    "longDescription": "An MCP server in Go that gives a model real hands inside a running Roblox Studio session — creating scripts, editing them, inspecting the DataModel, and executing Luau. The interesting constraint is that Studio plugins cannot accept inbound connections, so the direction is inverted: the Luau plugin long-polls a small HTTP server the MCP process runs on 127.0.0.1:44755. A tool call parks in Dispatch until the plugin's next poll picks it up, runs it, and POSTs the outcome back. The MCP side speaks JSON-RPC over stdio, so stdout is reserved for the protocol and all logging goes to stderr. Scaffolded from go-mcp-bootstrap.",
+    "tags": ["Go", "Luau", "MCP", "JSON-RPC", "Roblox"],
+    "github": "https://github.com/taiyyoson/roblox-studio-mcp",
     "live": null,
     "image": null,
     "featured": true
   },
   {
-    "slug": "particle-simulator",
-    "title": "Particle Simulator",
-    "description": "A 2D particle physics simulation with real-time rendering, gravity, springs, and interactive controls.",
-    "longDescription": "A 2D particle physics simulation built with Spring Boot and JavaFX. The physics engine uses Dyn4j for gravitational forces, collision detection, and spring constraints. Users can create, drag, and manipulate particles in real time with configurable physics parameters, pause/resume controls, and preset scenarios. The backend persists experiments to MongoDB with auto-save snapshots every 5 seconds via a parallel ScheduledExecutorService, fully containerized with Docker and Colima.",
-    "tags": ["Java", "Spring Boot", "JavaFX", "MongoDB", "Docker"],
-    "github": "https://github.com/taiyyoson/particle-simulator",
+    "slug": "pipelined-processor",
+    "title": "Pipelined RISC-V Processor",
+    "description": "Processor design — A 5-stage pipelined RISC-V CPU with automatic hazard resolution, built in a logic simulator.",
+    "longDescription": "A 5-stage pipelined RISC-V processor built gate-by-gate in the Digital logic simulator. Instructions flow through fetch, decode, execute, memory, and writeback stages simultaneously, and a hazard unit resolves data and control hazards on its own by stalling, forwarding, and flushing — no manually inserted nop instructions required. Components include a 32-register register file, an ALU driven by the control unit, a branch unit that evaluates conditions and computes target addresses, and a load/store memory subsystem. Assembly test programs and Python tooling verify instruction behavior across the pipeline.",
+    "tags": ["RISC-V", "Computer Architecture", "Assembly", "Digital Logic", "Python"],
+    "github": "https://github.com/taiyyoson/pipelined-processor",
     "live": null,
     "image": null,
     "featured": true
@@ -24,10 +35,43 @@
   {
     "slug": "network-compression-detector",
     "title": "Network Compression Detector",
-    "description": "A C socket programming tool that detects compression on network paths using entropy-based UDP probing.",
+    "description": "Network systems tool — Detects compression on network paths using entropy-based UDP probing in C.",
     "longDescription": "Two companion applications — a client-server pair and a standalone tool — that detect compression links on network paths with 100% accuracy. The server initiates a TCP connection and sends high and low entropy UDP payload trains for the client to receive and analyze. Built and tested across UTM virtual machines running Ubuntu Linux, with packet transactions verified through Wireshark. Also replicated and benchmarked in Golang for performance comparison.",
     "tags": ["C", "Golang", "Socket Programming", "Networking", "Linux"],
-    "github": "https://github.com/taiyyoson/network-compression-detection-general",
+    "github": "https://github.com/taiyyoson/network-compression-server-client",
+    "live": null,
+    "image": null,
+    "featured": true
+  },
+  {
+    "slug": "claude-init",
+    "title": "claude-init",
+    "description": "Developer tooling — A version-controlled Claude Code setup with three working modes enforced by hooks.",
+    "longDescription": "A version-controlled Claude Code configuration where the repository is the source of truth and ~/.claude holds symlinks into it, installed by an idempotent script with a --dry flag that shows what would change first. The core idea is three working modes — coach, build, and autopilot — that change the working relationship for a single repository rather than globally. Mode is stored per repository in .claude/.mode, so different projects can sit in different modes at once. The boundaries are real rather than advisory: in coach mode a PreToolUse hook blocks Edit and Write outright, so the agent scaffolds and explains while you write the code. The behavioral frame for the active mode is injected at session start by a hook, so switching modes is one command with no second step.",
+    "tags": ["Python", "Shell", "Claude Code", "Developer Tooling", "Hooks"],
+    "github": "https://github.com/taiyyoson/my-claude-code",
+    "live": null,
+    "image": null,
+    "featured": false
+  },
+  {
+    "slug": "particle-simulator",
+    "title": "Particle Simulator",
+    "description": "Full-stack desktop app — A 2D particle physics simulation with real-time rendering, gravity, and springs.",
+    "longDescription": "A 2D particle physics simulation built with Spring Boot and JavaFX. The physics engine uses Dyn4j for gravitational forces, collision detection, and spring constraints. Users can create, drag, and manipulate particles in real time with configurable physics parameters, pause/resume controls, and preset scenarios. The backend persists experiments to MongoDB with auto-save snapshots every 5 seconds via a parallel ScheduledExecutorService, fully containerized with Docker and Colima.",
+    "tags": ["Java", "Spring Boot", "JavaFX", "MongoDB", "Docker"],
+    "github": "https://github.com/taiyyoson/particle-simulator",
+    "live": null,
+    "image": null,
+    "featured": false
+  },
+  {
+    "slug": "ai-text-classifier",
+    "title": "AI-Generated Text Classifier",
+    "description": "ML research project — Classical models with engineered readability features that beat a fine-tuned BERT baseline.",
+    "longDescription": "A study in whether interpretable, low-resource models can hold their own against a transformer on AI-text detection. Logistic Regression, Random Forest, and a fine-tuned BERT were trained on the same task — labeling text as human-written or AI-generated — using TF-IDF vectors capped at 10,000 features combined with engineered structural and readability signals: Flesch Reading Ease, Gunning Fog, SMOG index, character length, and word count. Data came from a labeled Kaggle essay set plus the artem9k/ai-text-detection-pile corpus of over 1.3 million examples, split 80/20 with grid cross-validation and interpreted using SHAP. Random Forest reached 99% accuracy and Logistic Regression 94%, while the BERT baseline reached only 80% — the engineered readability features turned out to carry most of the signal. Coauthored with Ezequiel Beck for CS 463/663, Foundations of Machine Learning.",
+    "tags": ["Python", "scikit-learn", "BERT", "NLP", "SHAP", "Jupyter"],
+    "github": "https://github.com/taiyyoson/ml_text_classifier_project",
     "live": null,
     "image": null,
     "featured": false
@@ -35,11 +79,22 @@
   {
     "slug": "chore-mate",
     "title": "ChoreMate",
-    "description": "A gamified collaborative chore management app where completing tasks keeps a shared virtual pet healthy.",
-    "longDescription": "ChoreMate (ChorePet) is a collaborative household task management app that gamifies chore completion through virtual pet mechanics. Completing assigned chores earns points toward a shared digital pet's health — the pet visually reacts based on its wellbeing, from happy animations above 90% to critical distress below 20%. Features automated task distribution based on individual capacity, configurable difficulty ratings, and completion frequency tracking. Built as a full-stack team project with a deployed web frontend.",
+    "description": "Full-stack team project — A gamified chore manager where completing tasks keeps a shared virtual pet healthy.",
+    "longDescription": "ChoreMate (ChorePet) is a collaborative household task management app that gamifies chore completion through virtual pet mechanics. Completing assigned chores earns points toward a shared digital pet's health — the pet visually reacts based on its wellbeing, from happy animations above 90% to critical distress below 20%. Features automated task distribution based on individual capacity, configurable difficulty ratings, and completion frequency tracking. Built as a full-stack team project where I owned the backend.",
     "tags": ["JavaScript", "React", "Node.js", "Full-Stack"],
     "github": "https://github.com/taiyyoson/chore-mate",
     "live": null,
+    "image": null,
+    "featured": false
+  },
+  {
+    "slug": "devolio",
+    "title": "devolio",
+    "description": "Personal site — This site: a terminal you can navigate like a filesystem, with a portfolio view behind it.",
+    "longDescription": "The site you are reading. It renders two front ends over one set of content: a portfolio view, and a terminal that exposes the same projects and experience as a navigable fake filesystem with tab completion and command history. Login is GitHub OAuth and lives only in the terminal — sessions are HMAC-signed cookies minted solely for the repository owner, with no session store, so rotating the secret revokes everything at once. The blog has no database: posts are markdown files in git, and the owner-gated editor commits them back through the GitHub API, so a published post is a commit that triggers a deploy. Hardened with a strict Content-Security-Policy and covered by a Playwright end-to-end suite.",
+    "tags": ["Next.js", "React", "Tailwind", "OAuth", "Playwright"],
+    "github": "https://github.com/taiyyoson/devolio",
+    "live": "https://www.taiyyoson.com/",
     "image": null,
     "featured": false
   }

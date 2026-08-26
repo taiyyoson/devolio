@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+const LINK = "text-accent underline underline-offset-2 hover:text-accent-hover transition-colors";
 
 export default function PortfolioHero() {
   return (
@@ -18,12 +20,18 @@ export default function PortfolioHero() {
               What got me into engineering? Problem solving induces dopamine.
             </p>
             <p>
-              I&apos;m currently based in the San Francisco Bay Area, but I&apos;m from Hawaii (yes I can surf) and born in Japan. Besides programming, I like to build video games, tinker, do photography, hike, and snowboard. I volunteer at a garden. I practice with a semi-professional soccer team, and I&apos;m a professional spikeball player.
+              I&apos;m currently based in the San Francisco Bay Area, but I&apos;m from Hawaii (yes I can surf) and born in Japan. Off the keyboard, I like to build video games, tinker, do photography, hike, and snowboard. I volunteer at a garden. I practice with a semi-professional soccer team, and I&apos;m a professional spikeball player.
               </p> 
 
             <p>
-              My last internship at Fastly was where I really got into specialized dsitributed systems and infrastructure. I built an API tool to probe ephemeral edge cache nodes and test their internal components.  
-              </p>           
+              In summer 2025 I was on the Embedded team at{" "}
+              <a href="https://www.fastly.com" target="_blank" rel="noopener noreferrer" className={LINK}>
+                Fastly
+              </a>
+              , where I built a Go tool that probes ephemeral edge-cache nodes and
+              exercises their compute and observability internals. It ships as a Helm
+              chart and runs in CI on a private Kubernetes cluster. That job is what really opened my eyes to infra.
+            </p>           
           </div>
         </div>
         <Image
