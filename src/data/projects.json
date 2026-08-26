@@ -7,20 +7,20 @@
     "tags": ["Python", "React Native", "FastAPI", "RAG", "PostgreSQL", "pgvector"],
     "github": "https://github.com/taiyyoson/nala",
     "live": "https://nala-chatbot.expo.app/",
-    "thumbnail": null,
+    "thumbnail": "/images/nala.png",
     "featured": true,
     "context": {
-      "company": "TODO: who this was built for",
-      "team": "TODO: team size and composition",
-      "role": "TODO: your scope — backend, RAG pipeline, mobile?",
-      "timeline": "TODO: start – present"
+      "company": "USFca Professors: Alark Joshi, Kelly L'Engle",
+      "team": "3-person team",
+      "role": "backend and AI backend, RAG pipeline, database design",
+      "timeline": "2025-08 - 2026-07"
     },
     "problem": "Structured wellness coaching depends on a human coach's judgment, which does not scale to everyone who needs it. A general-purpose chatbot can hold the conversation but has no grounding in what a trained coach would actually say at a given point in a program.",
     "solution": "A RAG pipeline that retrieves relevant examples from a corpus of real coaching interactions and conditions the model on them before it answers, so responses stay anchored to evidence-based practice rather than to the model's priors.",
     "impact": [
-      "Coauthored publication submitted to ACM CHI 2026.",
+      "Coauthored publication entry submitted to ACM CHI 2026.",
       "Built on real interactions from the Examen Tu Salud program.",
-      "TODO: users onboarded, retention through the 4-week program, or coach-rated response quality"
+      "User testing on real students and faculty."
     ],
     "diagrams": [
       {
@@ -39,6 +39,10 @@
         "  LLM -->|grounded response| API",
         "  API --> RN"
         ]
+      },
+      {
+        "title": "Photo with team and poster",
+        "image": "/images/poster_photo.jpg"
       }
     ]
   },
@@ -99,10 +103,10 @@
     "thumbnail": null,
     "featured": true,
     "context": {
-      "company": "TODO: course and institution",
-      "team": "TODO: solo or partnered",
-      "role": "TODO: your scope",
-      "timeline": "TODO: term"
+      "company": "TODO",
+      "team": "Solo",
+      "role": "Architect",
+      "timeline": "TODO"
     },
     "problem": "Overlapping five instructions in flight at once is what makes a pipeline fast, and also what breaks it: an instruction can read a register the one ahead of it has not written yet, and a taken branch invalidates whatever was speculatively fetched behind it.",
     "solution": "A hazard unit that resolves both classes in hardware — forwarding results back from later stages, stalling when a load's value is not ready in time, and flushing the pipeline on a taken branch — so correct programs run without hand-inserted nops.",

@@ -103,12 +103,37 @@ time instead of as one long escaped string:
 ```
 
 `title` and `caption` are optional. A plain string works in place of the array if
-the diagram is a one-liner. Diagrams render client-side and follow the light/dark
-theme; see `nala` (flowchart) and `roblox-studio-mcp` (sequence diagram) for
-working examples.
+the diagram is a one-liner. Mermaid diagrams render client-side and follow the
+light/dark theme; see `nala` (flowchart) and `roblox-studio-mcp` (sequence
+diagram) for working examples.
 
-**Terminal caveat:** diagrams are **web only**. The terminal README shows the text
-fields; there is no way to draw a mermaid diagram in it.
+#### Image figures
+
+An entry can carry an `image` instead of `mermaid`, so the same array holds
+screenshots, exported diagrams, and build-process shots:
+
+```json
+"diagrams": [
+  {
+    "title": "Schema",
+    "caption": "Optional prose under the image.",
+    "image": "/images/projects/nala-schema.png",
+    "width": 1600,
+    "height": 900
+  }
+]
+```
+
+`width` and `height` only set the intrinsic aspect ratio so the slot is reserved
+before the file loads — they should match the real proportions, but the image
+always renders at the column width. They default to 1600×900 if omitted, which
+will make a differently-shaped image jump on load.
+
+Mermaid and image entries can be mixed in one array and render in the order
+written.
+
+**Terminal caveat:** diagrams and images are **web only**. The terminal README
+shows the text fields; there is no way to draw either in it.
 
 ## Experience — one file
 

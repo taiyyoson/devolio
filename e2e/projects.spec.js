@@ -49,7 +49,30 @@ test.describe("Project detail", () => {
     expect(text).toContain("Problem");
     expect(text).toContain("Solution");
     expect(text).toContain("Impact");
+    expect(text).toContain("Overview");
+  });
+
+  test("renders context rows that carry a real value", async ({ page }) => {
+    await page.goto("/projects/roblox-studio-mcp");
+    const text = await page.textContent("body");
     expect(text).toContain("My role");
+    expect(text).toContain("Personal project");
+  });
+
+  // TODO values are authored in projects.json as reminders. They must never
+  // reach a rendered page — an unfilled field reads as absent, not unfinished.
+  test("no TODO placeholder leaks onto any project page", async ({ page }) => {
+    for (const project of projects) {
+      await page.goto(`/projects/${project.slug}`);
+      const text = await page.textContent("body");
+      expect(text, `${project.slug} rendered a TODO placeholder`).not.toContain("TODO");
+    }
+  });
+
+  test("a project whose context is entirely TODO renders no context row", async ({ page }) => {
+    await page.goto("/projects/nala");
+    const text = await page.textContent("body");
+    expect(text).not.toContain("My role");
   });
 
   test("renders a mermaid diagram as inline SVG", async ({ page }) => {

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import Mermaid from "./Mermaid";
 import ProjectThumbnail from "./ProjectThumbnail";
@@ -34,7 +35,7 @@ export default function ProjectCaseStudy({ project }) {
   const solution = drop(project.solution);
   const overview = drop(project.longDescription);
   const impact = (project.impact ?? []).filter((item) => !isTodo(item));
-  const diagrams = (project.diagrams ?? []).filter((d) => d?.mermaid);
+  const diagrams = (project.diagrams ?? []).filter((d) => d?.mermaid || d?.image);
   const contextRows = CONTEXT_LABELS.filter(([key]) => drop(context?.[key]));
 
   return (
@@ -101,7 +102,20 @@ export default function ProjectCaseStudy({ project }) {
                   {diagram.title}
                 </figcaption>
               )}
-              <Mermaid chart={toChart(diagram.mermaid)} />
+              {diagram.mermaid ? (
+                <Mermaid chart={toChart(diagram.mermaid)} />
+              ) : (
+                // width/height only fix the intrinsic aspect ratio so the slot is
+                // reserved before load; the rendered size is always the column width.
+                <Image
+                  src={diagram.image}
+                  alt={diagram.title || diagram.caption || ""}
+                  width={diagram.width ?? 1600}
+                  height={diagram.height ?? 900}
+                  sizes="(max-width: 768px) 100vw, 800px"
+                  className="w-full h-auto rounded-lg border border-border bg-card"
+                />
+              )}
               {diagram.caption && (
                 <figcaption className="mt-2 max-w-prose text-sm leading-relaxed text-muted">
                   {diagram.caption}
