@@ -1,6 +1,4 @@
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import Mermaid from "./Mermaid";
 import ProjectThumbnail from "./ProjectThumbnail";
 
@@ -13,40 +11,31 @@ const CONTEXT_LABELS = [
   ["timeline", "When"],
 ];
 
-const isTodo = (value) => typeof value === "string" && value.startsWith("TODO");
+const isTodo = (value) => typeof value === "string" && value.trimStart().startsWith("TODO");
 
-function Value({ children }) {
-  return isTodo(children) ? (
-    <span className="text-muted/60 italic">{children}</span>
-  ) : (
-    <>{children}</>
-  );
-}
+const drop = (value) => (!value || isTodo(value) ? null : value);
 
-function Section({ title, children }) {
+// Authored as an array of lines so the mermaid source stays readable in JSON.
+const toChart = (mermaid) => (Array.isArray(mermaid) ? mermaid.join("\n") : mermaid);
+
+function Section({ title, wide = false, children }) {
   return (
-    <section className="mb-10 max-w-prose">
+    <section className={`mb-10 ${wide ? "" : "max-w-prose"}`}>
       <h2 className="text-xs uppercase tracking-widest text-muted mb-3">{title}</h2>
       {children}
     </section>
   );
 }
 
-const markdownComponents = {
-  pre({ children }) {
-    const child = Array.isArray(children) ? children[0] : children;
-    const className = child?.props?.className;
+export default function ProjectCaseStudy({ project }) {
+  const { context } = project;
 
-    if (typeof className === "string" && className.includes("language-mermaid")) {
-      return <Mermaid chart={String(child.props.children).trim()} />;
-    }
-
-    return <pre>{children}</pre>;
-  },
-};
-
-export default function ProjectCaseStudy({ project, caseStudy }) {
-  const { context, problem, solution, impact } = project;
+  const problem = drop(project.problem);
+  const solution = drop(project.solution);
+  const overview = drop(project.longDescription);
+  const impact = (project.impact ?? []).filter((item) => !isTodo(item));
+  const diagrams = (project.diagrams ?? []).filter((d) => d?.mermaid);
+  const contextRows = CONTEXT_LABELS.filter(([key]) => drop(context?.[key]));
 
   return (
     <article className="mb-16">
@@ -80,14 +69,12 @@ export default function ProjectCaseStudy({ project, caseStudy }) {
         </div>
       </header>
 
-      {context && (
+      {contextRows.length > 0 && (
         <dl className="mb-10 grid gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-4 max-w-3xl">
-          {CONTEXT_LABELS.filter(([key]) => context[key]).map(([key, label]) => (
+          {contextRows.map(([key, label]) => (
             <div key={key}>
               <dt className="text-xs uppercase tracking-widest text-muted mb-1">{label}</dt>
-              <dd className="text-sm text-foreground/90">
-                <Value>{context[key]}</Value>
-              </dd>
+              <dd className="text-sm text-foreground/90">{context[key]}</dd>
             </div>
           ))}
         </dl>
@@ -95,27 +82,43 @@ export default function ProjectCaseStudy({ project, caseStudy }) {
 
       {problem && (
         <Section title="Problem">
-          <p className="leading-relaxed text-foreground/90">
-            <Value>{problem}</Value>
-          </p>
+          <p className="leading-relaxed text-foreground/90">{problem}</p>
         </Section>
       )}
 
       {solution && (
         <Section title="Solution">
-          <p className="leading-relaxed text-foreground/90">
-            <Value>{solution}</Value>
-          </p>
+          <p className="leading-relaxed text-foreground/90">{solution}</p>
         </Section>
       )}
 
-      {project.longDescription && (
+      {diagrams.length > 0 && (
+        <Section title="Architecture" wide>
+          {diagrams.map((diagram, i) => (
+            <figure key={i} className="mb-8 last:mb-0">
+              {diagram.title && (
+                <figcaption className="text-sm font-medium text-foreground/90 mb-2">
+                  {diagram.title}
+                </figcaption>
+              )}
+              <Mermaid chart={toChart(diagram.mermaid)} />
+              {diagram.caption && (
+                <figcaption className="mt-2 max-w-prose text-sm leading-relaxed text-muted">
+                  {diagram.caption}
+                </figcaption>
+              )}
+            </figure>
+          ))}
+        </Section>
+      )}
+
+      {overview && (
         <Section title="Overview">
-          <p className="leading-relaxed text-foreground/90">{project.longDescription}</p>
+          <p className="leading-relaxed text-foreground/90">{overview}</p>
         </Section>
       )}
 
-      {impact?.length > 0 && (
+      {impact.length > 0 && (
         <Section title="Impact">
           <ul className="space-y-2">
             {impact.map((item, i) => (
@@ -123,21 +126,11 @@ export default function ProjectCaseStudy({ project, caseStudy }) {
                 <span className="text-accent shrink-0" aria-hidden="true">
                   ▸
                 </span>
-                <span>
-                  <Value>{item}</Value>
-                </span>
+                <span>{item}</span>
               </li>
             ))}
           </ul>
         </Section>
-      )}
-
-      {caseStudy && (
-        <div className="prose prose-neutral dark:prose-invert max-w-none font-serif prose-headings:font-ramaraja prose-a:text-accent">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-            {caseStudy}
-          </ReactMarkdown>
-        </div>
       )}
     </article>
   );

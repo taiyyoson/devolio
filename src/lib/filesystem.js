@@ -20,23 +20,32 @@ const CONTEXT_LABELS = [
   ["timeline", "When "],
 ];
 
+// Placeholder values are authored in projects.json as reminders. Both views drop
+// them, so an unfilled field reads as absent rather than as unfinished copy.
+const isTodo = (value) => typeof value === "string" && value.trimStart().startsWith("TODO");
+const drop = (value) => (!value || isTodo(value) ? null : value);
+
 function formatProject(p) {
   let text = `${p.title}\n${"=".repeat(p.title.length)}\n\n`;
   text += `${p.description}\n\n`;
 
-  if (p.context) {
-    for (const [key, label] of CONTEXT_LABELS) {
-      if (p.context[key]) text += `${label}: ${p.context[key]}\n`;
-    }
+  const rows = CONTEXT_LABELS.filter(([key]) => drop(p.context?.[key]));
+  if (rows.length) {
+    for (const [key, label] of rows) text += `${label}: ${p.context[key]}\n`;
     text += "\n";
   }
 
-  if (p.problem) text += `PROBLEM\n${p.problem}\n\n`;
-  if (p.solution) text += `SOLUTION\n${p.solution}\n\n`;
-  if (p.longDescription) text += `OVERVIEW\n${p.longDescription}\n\n`;
-  if (p.impact?.length) {
+  const problem = drop(p.problem);
+  const solution = drop(p.solution);
+  const overview = drop(p.longDescription);
+  const impact = (p.impact ?? []).filter((item) => !isTodo(item));
+
+  if (problem) text += `PROBLEM\n${problem}\n\n`;
+  if (solution) text += `SOLUTION\n${solution}\n\n`;
+  if (overview) text += `OVERVIEW\n${overview}\n\n`;
+  if (impact.length) {
     text += "IMPACT\n";
-    for (const item of p.impact) text += `  - ${item}\n`;
+    for (const item of impact) text += `  - ${item}\n`;
     text += "\n";
   }
 

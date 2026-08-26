@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import ProjectCaseStudy from "@/components/portfolio/ProjectCaseStudy";
-import { getProjectBySlug, getProjectSlugs, getCaseStudy } from "@/lib/projects";
+import { getProjectBySlug, getProjectSlugs } from "@/lib/projects";
 
 export function generateStaticParams() {
   return getProjectSlugs().map((slug) => ({ slug }));
@@ -27,5 +27,5 @@ export default async function ProjectPage({ params }) {
   const project = getProjectBySlug(slug);
   if (!project) notFound();
 
-  return <ProjectCaseStudy project={project} caseStudy={getCaseStudy(slug)} />;
+  return <ProjectCaseStudy project={project} />;
 }
