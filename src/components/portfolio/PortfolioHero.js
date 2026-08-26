@@ -12,7 +12,7 @@ export default function PortfolioHero() {
           </h1>
           <div className="space-y-5 text-foreground/90 leading-relaxed">
             <p>
-              I&apos;m a software engineer in distributed systems, cloud
+              I&apos;m a software engineer in distributed systems,
               infrastructure, and frontier AI. I enjoy building edge-cache tooling, homelabbing,
               self-hosting, and learning new technologies that excite me.
             </p>
