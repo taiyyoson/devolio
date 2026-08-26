@@ -21,7 +21,7 @@ feeds both from one file, but not all of it.
 `src/lib/filesystem.js` is what turns the shared JSON into the terminal's fake
 filesystem, which is why one edit updates both views.
 
-## Projects — one file
+## Projects — one file, plus an optional case study
 
 `src/data/projects.json`, one object per project:
 
@@ -29,20 +29,62 @@ filesystem, which is why one edit updates both views.
 {
   "slug": "nala",
   "title": "Nala",
-  "description": "One-liner shown in the GUI list and the terminal README.",
-  "longDescription": "Long text. Terminal only — cat projects/<slug>/README.md.",
+  "description": "One-liner shown in the GUI card and the terminal README.",
+  "longDescription": "Long text, rendered as the Overview section on both views.",
   "tags": ["Python", "RAG"],
   "github": "https://github.com/...",
   "live": null,
-  "image": null,
-  "featured": true
+  "thumbnail": null,
+  "featured": true,
+
+  "context": {
+    "company": "Where it was built",
+    "team": "Team size and composition",
+    "role": "Your scope on it",
+    "timeline": "When"
+  },
+  "problem": "What was broken.",
+  "solution": "The approach taken.",
+  "impact": ["Result bullet", "Another result"]
 }
 ```
 
-- `title` and `description` are what appear in both views
-- `github`, if set, turns the title into a link in the GUI
+- `title` and `description` appear in both views
 - `featured: true` renders a `*` next to it
-- `slug` is the terminal path: `cd projects/<slug>`
+- `slug` is both the terminal path (`cd projects/<slug>`) and the web route
+  (`/projects/<slug>`)
+- `thumbnail` is a path under `public/images/projects/`. Leave it `null` and the
+  card falls back to a generated initials tile, so a missing image never looks
+  broken
+- `context`, `problem`, `solution` and `impact` are all **optional** — a project
+  missing them just renders fewer sections
+- Any value starting with `TODO` renders greyed and italic, so unfilled fields are
+  visibly unfinished rather than quietly wrong
+- **`github` is no longer a link on the index.** The card links to the case study;
+  GitHub lives on that page
+
+### The long-form case study
+
+`src/content/projects/<slug>.md` — optional, one per project, no frontmatter
+required. It renders below the structured sections on `/projects/<slug>`.
+
+This is where the technical depth goes: data architecture, schemas, build process,
+results. Fenced blocks tagged `mermaid` render as diagrams:
+
+````md
+```mermaid
+flowchart LR
+  A["Client"] --> B["API"]
+```
+````
+
+`src/content/projects/nala.md` has a flowchart and
+`src/content/projects/roblox-studio-mcp.md` a sequence diagram, if you want
+working examples to copy.
+
+**Terminal caveat:** the markdown case study is **web only**. `src/lib/filesystem.js`
+is imported by the client `Terminal` and so cannot read from disk — the terminal
+README shows the structured JSON fields, not this file.
 
 ## Experience — one file
 

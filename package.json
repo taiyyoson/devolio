@@ -13,6 +13,7 @@
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",
     "gray-matter": "^4.0.3",
+    "mermaid": "^11.17.2",
     "next": "^16.3.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
