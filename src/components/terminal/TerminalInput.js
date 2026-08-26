@@ -8,7 +8,6 @@ function getCompletions(input, commands, fileSystem, cwd) {
   const spaceIndex = trimmed.indexOf(" ");
   const isCompletingCommand = spaceIndex === -1;
 
-  // Complete command name
   if (isCompletingCommand) {
     const prefix = trimmed;
     return {
@@ -18,16 +17,14 @@ function getCompletions(input, commands, fileSystem, cwd) {
     };
   }
 
-  // Complete path argument for path-aware commands
+
   const cmd = trimmed.slice(0, spaceIndex);
   if (!PATH_COMMANDS.has(cmd)) return { matches: [], token: "", isCommand: false };
 
-  // Get the partial path after the last space
   const afterCmd = trimmed.slice(spaceIndex + 1);
   const lastSpace = afterCmd.lastIndexOf(" ");
   const partial = lastSpace === -1 ? afterCmd : afterCmd.slice(lastSpace + 1);
 
-  // Split partial into directory part and name prefix
   const lastSlash = partial.lastIndexOf("/");
   let dirPart, namePrefix;
   if (lastSlash === -1) {
@@ -38,12 +35,11 @@ function getCompletions(input, commands, fileSystem, cwd) {
     namePrefix = partial.slice(lastSlash + 1);
   }
 
-  // Resolve the directory
   const dirPath = dirPart ? resolvePath(cwd, dirPart) : cwd;
   const dirNode = getNode(fileSystem, dirPath);
   if (!dirNode || dirNode.type !== "directory") return { matches: [], token: partial, isCommand: false };
 
-  // Find matching children
+
   const matches = Object.keys(dirNode.children)
     .filter((name) => name.startsWith(namePrefix))
     .map((name) => {
@@ -103,30 +99,26 @@ export default function TerminalInput({
       const { matches, token, isCommand } = getCompletions(value, commands, fileSystem, cwd);
       if (matches.length === 0) return;
 
-      // Build the completed input with a given replacement token
+
       const applyCompletion = (completed) => {
         if (isCommand) {
           return completed;
         }
-        // Replace the last token in the input
         const lastTokenStart = value.lastIndexOf(token);
         return value.slice(0, lastTokenStart) + completed;
       };
 
       if (matches.length === 1) {
         let completed = matches[0];
-        // Add trailing space after commands and files (not dirs, they already have /)
         if (isCommand || !completed.endsWith("/")) {
           completed += " ";
         }
         onChange(applyCompletion(completed));
       } else {
-        // Fill longest common prefix
         const common = longestCommonPrefix(matches);
         if (common.length > token.length) {
           onChange(applyCompletion(common));
         }
-        // Display matches — show just the basename for readability
         const displayNames = matches.map((m) => {
           const parts = m.split("/").filter(Boolean);
           const name = parts[parts.length - 1] || m;

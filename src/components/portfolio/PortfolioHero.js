@@ -15,12 +15,19 @@ export default function PortfolioHero() {
               self-hosting, and learning new technologies that excite me.
             </p>
             <p>
-              
-              </p>            
+              What got me into engineering? Problem solving induces dopamine.
+            </p>
+            <p>
+              I&apos;m currently based in the San Francisco Bay Area, but I&apos;m from Hawaii (yes I can surf) and born in Japan. Besides programming, I like to build video games, tinker, do photography, hike, and snowboard. I volunteer at a garden. I practice with a semi-professional soccer team, and I&apos;m a professional spikeball player.
+              </p> 
+
+            <p>
+              My last internship at Fastly was where I really got into specialized dsitributed systems and infrastructure. I built an API tool to probe ephemeral edge cache nodes and test their internal components.  
+              </p>           
           </div>
         </div>
         <Image
-          src="/images/cover-image-placeholder.jpeg"
+          src="/images/devolio-img1.JPG"
           alt="Taiyo Williamson"
           width={2149}
           height={2149}
