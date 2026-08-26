@@ -4,18 +4,42 @@ import { ABOUT_TEXT } from "@/data/about";
 import { CONTACT_TEXT } from "@/data/contact";
 
 const EXPERIENCE_SLUGS = {
-  "Research Assistant": "research-assistant",
+  "VGL Research Assistant": "research-assistant",
   "CS Tutor & Teaching Assistant": "cs-tutor",
   "Founding Executive Director": "hack4impact",
   "Embedded Software Engineering Intern": "fastly",
   "Software Developer Intern": "pacxa",
-  "B.S. Computer Science / M.S. Computer Science (4+1)": "usfca",
+  "B.S. Computer Science": "usfca",
+  "M.S. Computer Science (4+1) (currently on LOA)": "usfca"
 };
+
+const CONTEXT_LABELS = [
+  ["company", "Where"],
+  ["team", "Team "],
+  ["role", "Role "],
+  ["timeline", "When "],
+];
 
 function formatProject(p) {
   let text = `${p.title}\n${"=".repeat(p.title.length)}\n\n`;
   text += `${p.description}\n\n`;
-  if (p.longDescription) text += `${p.longDescription}\n\n`;
+
+  if (p.context) {
+    for (const [key, label] of CONTEXT_LABELS) {
+      if (p.context[key]) text += `${label}: ${p.context[key]}\n`;
+    }
+    text += "\n";
+  }
+
+  if (p.problem) text += `PROBLEM\n${p.problem}\n\n`;
+  if (p.solution) text += `SOLUTION\n${p.solution}\n\n`;
+  if (p.longDescription) text += `OVERVIEW\n${p.longDescription}\n\n`;
+  if (p.impact?.length) {
+    text += "IMPACT\n";
+    for (const item of p.impact) text += `  - ${item}\n`;
+    text += "\n";
+  }
+
   text += `Tags: ${p.tags.join(", ")}\n`;
   if (p.github) text += `GitHub: ${p.github}\n`;
   if (p.live) text += `Live:   ${p.live}\n`;
@@ -36,7 +60,7 @@ function formatExperience(e) {
 const PUBLICATION_CONTENT = `Nala: An AI Health Coaching Chatbot
 ====================================
 
-Coauthored publication submitted to ACM CHI 2026.
+Coauthored publication entry submitted to ACM CHI 2026.
 
 Nala is an intelligent health coaching assistant combining RAG-based
 conversational AI with evidence-based wellness coaching. It guides users

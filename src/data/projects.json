@@ -7,8 +7,21 @@
     "tags": ["Python", "React Native", "FastAPI", "RAG", "PostgreSQL", "pgvector"],
     "github": "https://github.com/taiyyoson/nala",
     "live": "https://nala-chatbot.expo.app/",
-    "image": null,
-    "featured": true
+    "thumbnail": null,
+    "featured": true,
+    "context": {
+      "company": "TODO: who this was built for",
+      "team": "TODO: team size and composition",
+      "role": "TODO: your scope — backend, RAG pipeline, mobile?",
+      "timeline": "TODO: start – present"
+    },
+    "problem": "Structured wellness coaching depends on a human coach's judgment, which does not scale to everyone who needs it. A general-purpose chatbot can hold the conversation but has no grounding in what a trained coach would actually say at a given point in a program.",
+    "solution": "A RAG pipeline that retrieves relevant examples from a corpus of real coaching interactions and conditions the model on them before it answers, so responses stay anchored to evidence-based practice rather than to the model's priors.",
+    "impact": [
+      "Coauthored publication submitted to ACM CHI 2026.",
+      "Built on real interactions from the Examen Tu Salud program.",
+      "TODO: users onboarded, retention through the 4-week program, or coach-rated response quality"
+    ]
   },
   {
     "slug": "roblox-studio-mcp",
@@ -18,8 +31,19 @@
     "tags": ["Go", "Luau", "MCP", "JSON-RPC", "Roblox"],
     "github": "https://github.com/taiyyoson/roblox-studio-mcp",
     "live": null,
-    "image": null,
-    "featured": true
+    "thumbnail": null,
+    "featured": true,
+    "context": {
+      "company": "Personal project",
+      "team": "Solo",
+      "role": "Everything — Go MCP server, Luau plugin, transport design",
+      "timeline": "TODO: start – end"
+    },
+    "problem": "A model can write Luau, but it cannot see whether the Luau works. Closing that loop means reaching into a live Studio session, and Studio plugins cannot accept inbound connections — so there is no server for a tool call to connect to.",
+    "solution": "Invert the direction of the connection. The plugin long-polls a loopback HTTP server the MCP process owns; a tool call parks in a dispatch queue until the next poll collects it, runs it in Studio, and POSTs the result back.",
+    "impact": [
+      "TODO: what this unlocked — tools exposed, tasks completed end-to-end, time saved"
+    ]
   },
   {
     "slug": "pipelined-processor",
@@ -29,8 +53,20 @@
     "tags": ["RISC-V", "Computer Architecture", "Assembly", "Digital Logic", "Python"],
     "github": "https://github.com/taiyyoson/pipelined-processor",
     "live": null,
-    "image": null,
-    "featured": true
+    "thumbnail": null,
+    "featured": true,
+    "context": {
+      "company": "TODO: course and institution",
+      "team": "TODO: solo or partnered",
+      "role": "TODO: your scope",
+      "timeline": "TODO: term"
+    },
+    "problem": "Overlapping five instructions in flight at once is what makes a pipeline fast, and also what breaks it: an instruction can read a register the one ahead of it has not written yet, and a taken branch invalidates whatever was speculatively fetched behind it.",
+    "solution": "A hazard unit that resolves both classes in hardware — forwarding results back from later stages, stalling when a load's value is not ready in time, and flushing the pipeline on a taken branch — so correct programs run without hand-inserted nops.",
+    "impact": [
+      "Assembly test programs and Python tooling verify instruction behavior across the pipeline.",
+      "TODO: instructions implemented, CPI measured, tests passing"
+    ]
   },
   {
     "slug": "network-compression-detector",
@@ -40,8 +76,21 @@
     "tags": ["C", "Golang", "Socket Programming", "Networking", "Linux"],
     "github": "https://github.com/taiyyoson/network-compression-server-client",
     "live": null,
-    "image": null,
-    "featured": true
+    "thumbnail": null,
+    "featured": true,
+    "context": {
+      "company": "TODO: course and institution",
+      "team": "TODO: solo or partnered",
+      "role": "TODO: your scope",
+      "timeline": "TODO: term"
+    },
+    "problem": "A network path may silently compress traffic in transit, and nothing along the path will tell you. Detecting it has to be done from the endpoints, without cooperation from the links in between.",
+    "solution": "Send two UDP packet trains with identical size but opposite entropy — one incompressible, one highly compressible — and compare their transit behavior. A compressing link treats them differently; a transparent one does not.",
+    "impact": [
+      "100% detection accuracy across the test matrix.",
+      "Packet transactions verified independently through Wireshark.",
+      "Replicated in Go and benchmarked against the C implementation."
+    ]
   },
   {
     "slug": "claude-init",
@@ -51,8 +100,19 @@
     "tags": ["Python", "Shell", "Claude Code", "Developer Tooling", "Hooks"],
     "github": "https://github.com/taiyyoson/my-claude-code",
     "live": null,
-    "image": null,
-    "featured": false
+    "thumbnail": null,
+    "featured": false,
+    "context": {
+      "company": "Personal project",
+      "team": "Solo",
+      "role": "Everything",
+      "timeline": "TODO: start – present"
+    },
+    "problem": "Agent configuration drifts across machines with no history of what changed, and the authority you want to grant an agent is not constant — the right latitude on a scratch repo is the wrong latitude on production code.",
+    "solution": "Make the repository the source of truth and symlink ~/.claude into it, then split authority into three per-repository modes whose boundaries a PreToolUse hook actually enforces rather than merely describes.",
+    "impact": [
+      "TODO: repos using it, install time, incidents prevented"
+    ]
   },
   {
     "slug": "particle-simulator",
@@ -62,8 +122,20 @@
     "tags": ["Java", "Spring Boot", "JavaFX", "MongoDB", "Docker"],
     "github": "https://github.com/taiyyoson/particle-simulator",
     "live": null,
-    "image": null,
-    "featured": false
+    "thumbnail": null,
+    "featured": false,
+    "context": {
+      "company": "TODO: course, institution, or personal",
+      "team": "TODO: solo or team",
+      "role": "TODO: your scope",
+      "timeline": "TODO: term"
+    },
+    "problem": "A physics sandbox is only useful if you can change it while it runs, and a long-running experiment is only useful if losing the window does not lose the work.",
+    "solution": "A JavaFX front end over a Dyn4j engine with live-editable parameters, backed by a Spring Boot service that snapshots experiment state to MongoDB on a background scheduler so the simulation loop never blocks on a write.",
+    "impact": [
+      "Auto-save snapshots every 5 seconds on a parallel ScheduledExecutorService.",
+      "TODO: particle counts sustained, frame rate, anything measured"
+    ]
   },
   {
     "slug": "ai-text-classifier",
@@ -73,8 +145,21 @@
     "tags": ["Python", "scikit-learn", "BERT", "NLP", "SHAP", "Jupyter"],
     "github": "https://github.com/taiyyoson/ml_text_classifier_project",
     "live": null,
-    "image": null,
-    "featured": false
+    "thumbnail": null,
+    "featured": false,
+    "context": {
+      "company": "CS 463/663, Foundations of Machine Learning",
+      "team": "Coauthored with Ezequiel Beck",
+      "role": "TODO: which half of the work was yours",
+      "timeline": "TODO: term"
+    },
+    "problem": "The default answer to AI-text detection is to fine-tune a transformer, which is expensive to train, expensive to run, and hard to interrogate when it is wrong. It was not obvious that the expense was buying anything.",
+    "solution": "Train Logistic Regression and Random Forest on TF-IDF vectors combined with engineered readability signals — Flesch, Gunning Fog, SMOG, length, word count — and put them head to head with a fine-tuned BERT on the same task and split, then use SHAP to see which features actually carried the decision.",
+    "impact": [
+      "Random Forest 99% accuracy, Logistic Regression 94%, fine-tuned BERT 80%.",
+      "SHAP attribution showed the engineered readability features carried most of the signal.",
+      "Trained across a labeled Kaggle essay set plus a 1.3M-example corpus, 80/20 split with grid cross-validation."
+    ]
   },
   {
     "slug": "chore-mate",
@@ -84,8 +169,19 @@
     "tags": ["JavaScript", "React", "Node.js", "Full-Stack"],
     "github": "https://github.com/taiyyoson/chore-mate",
     "live": null,
-    "image": null,
-    "featured": false
+    "thumbnail": null,
+    "featured": false,
+    "context": {
+      "company": "TODO: course, institution, or personal",
+      "team": "TODO: team size",
+      "role": "Backend",
+      "timeline": "TODO: term"
+    },
+    "problem": "Shared-household chore apps fail the same way: the list is accurate and nobody looks at it. Tracking is not the hard part — sustaining attention is.",
+    "solution": "Tie completion to a single shared stake instead of individual scores. One virtual pet's health reflects the whole household's follow-through and visibly degrades when the chores lapse, and tasks distribute automatically by each person's capacity.",
+    "impact": [
+      "TODO: households using it, completion rates, whether the pet mechanic actually held attention"
+    ]
   },
   {
     "slug": "devolio",
@@ -95,7 +191,20 @@
     "tags": ["Next.js", "React", "Tailwind", "OAuth", "Playwright"],
     "github": "https://github.com/taiyyoson/devolio",
     "live": "https://www.taiyyoson.com/",
-    "image": null,
-    "featured": false
+    "thumbnail": null,
+    "featured": false,
+    "context": {
+      "company": "Personal project",
+      "team": "Solo",
+      "role": "Everything",
+      "timeline": "TODO: start – present"
+    },
+    "problem": "A portfolio that only describes what you can build asks the reader to take your word for it. The site itself is the first artifact anyone actually inspects.",
+    "solution": "Render two front ends over one content source — a conventional portfolio and a terminal that walks the same data as a fake filesystem — and keep the whole thing databaseless, with posts as markdown in git and sessions as HMAC-signed cookies minted only for the repo owner.",
+    "impact": [
+      "No database and no session store: rotating one secret revokes every session at once.",
+      "Publishing a post is a git commit, which triggers the deploy.",
+      "TODO: anything measured — traffic, Lighthouse, bundle size"
+    ]
   }
 ]
