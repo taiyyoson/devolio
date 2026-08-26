@@ -21,15 +21,15 @@ feeds both from one file, but not all of it.
 `src/lib/filesystem.js` is what turns the shared JSON into the terminal's fake
 filesystem, which is why one edit updates both views.
 
-## Projects — one file, plus an optional case study
+## Projects — one file
 
-`src/data/projects.json`, one object per project:
+`src/data/projects.json` is the whole store. One object per project:
 
 ```json
 {
   "slug": "nala",
   "title": "Nala",
-  "description": "One-liner shown in the GUI card and the terminal README.",
+  "description": "One-liner shown on the card and in the terminal README.",
   "longDescription": "Long text, rendered as the Overview section on both views.",
   "tags": ["Python", "RAG"],
   "github": "https://github.com/...",
@@ -45,7 +45,8 @@ filesystem, which is why one edit updates both views.
   },
   "problem": "What was broken.",
   "solution": "The approach taken.",
-  "impact": ["Result bullet", "Another result"]
+  "impact": ["Result bullet", "Another result"],
+  "diagrams": []
 }
 ```
 
@@ -56,35 +57,58 @@ filesystem, which is why one edit updates both views.
 - `thumbnail` is a path under `public/images/projects/`. Leave it `null` and the
   card falls back to a generated initials tile, so a missing image never looks
   broken
-- `context`, `problem`, `solution` and `impact` are all **optional** — a project
-  missing them just renders fewer sections
-- Any value starting with `TODO` renders greyed and italic, so unfilled fields are
-  visibly unfinished rather than quietly wrong
-- **`github` is no longer a link on the index.** The card links to the case study;
+- `context`, `problem`, `solution`, `impact` and `diagrams` are all **optional** —
+  a project missing them just renders fewer sections
+- **`github` is not a link on the index.** The card links to the case study;
   GitHub lives on that page
 
-### The long-form case study
+### TODO values are dropped, not rendered
 
-`src/content/projects/<slug>.md` — optional, one per project, no frontmatter
-required. It renders below the structured sections on `/projects/<slug>`.
+Any string starting with `TODO` is treated as an unfilled placeholder and is
+**omitted from both the web page and the terminal** — the field, and its section
+if nothing else fills it, simply does not appear. So an unfinished project reads
+as shorter rather than as unfinished.
 
-This is where the technical depth goes: data architecture, schemas, build process,
-results. Fenced blocks tagged `mermaid` render as diagrams:
+This means you can leave reminders to yourself directly in the data:
 
-````md
-```mermaid
-flowchart LR
-  A["Client"] --> B["API"]
+```json
+"impact": [
+  "Random Forest 99% accuracy, Logistic Regression 94%.",
+  "TODO: retention numbers once the study closes"
+]
 ```
-````
 
-`src/content/projects/nala.md` has a flowchart and
-`src/content/projects/roblox-studio-mcp.md` a sequence diagram, if you want
-working examples to copy.
+The first bullet renders; the second does not. Delete the `TODO` prefix when you
+fill it in and it appears.
 
-**Terminal caveat:** the markdown case study is **web only**. `src/lib/filesystem.js`
-is imported by the client `Terminal` and so cannot read from disk — the terminal
-README shows the structured JSON fields, not this file.
+### Diagrams
+
+`diagrams` is an array of objects rendered under an **Architecture** heading on
+`/projects/<slug>`. The `mermaid` field is an array of lines — joined with
+newlines before rendering — so the source stays readable and diffs one line at a
+time instead of as one long escaped string:
+
+```json
+"diagrams": [
+  {
+    "title": "Three-layer architecture",
+    "caption": "Optional prose under the diagram.",
+    "mermaid": [
+      "flowchart TD",
+      "  A[\"Client\"] --> B[\"API\"]",
+      "  B --> C[(\"PostgreSQL\")]"
+    ]
+  }
+]
+```
+
+`title` and `caption` are optional. A plain string works in place of the array if
+the diagram is a one-liner. Diagrams render client-side and follow the light/dark
+theme; see `nala` (flowchart) and `roblox-studio-mcp` (sequence diagram) for
+working examples.
+
+**Terminal caveat:** diagrams are **web only**. The terminal README shows the text
+fields; there is no way to draw a mermaid diagram in it.
 
 ## Experience — one file
 
