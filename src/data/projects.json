@@ -23,23 +23,7 @@
       "User testing on real students and faculty."
     ],
     "diagrams": [
-      {
-        "title": "Three-layer architecture",
-        "caption": "Relational and vector state share one PostgreSQL instance — pgvector is an extension, not a separate service — so a retrieval and the program-state read it is conditioned on hit the same database.",
-        "mermaid": [
-        "flowchart TD",
-        "  U[\"User\"] --> RN[\"React Native app\"]",
-        "  RN -->|HTTPS| API[\"FastAPI backend\"]",
-        "  API --> ORM[\"SQLAlchemy\"]",
-        "  ORM --> PG[(\"PostgreSQL<br/>users · sessions · program state\")]",
-        "  API --> RET[\"Retriever\"]",
-        "  RET <--> VEC[(\"pgvector<br/>coaching example embeddings\")]",
-        "  RET -->|top-k examples| PROMPT[\"Prompt assembly\"]",
-        "  PROMPT --> LLM[\"Claude / GPT\"]",
-        "  LLM -->|grounded response| API",
-        "  API --> RN"
-        ]
-      },
+
       {
         "title": "Photo with team and poster",
         "image": "/images/poster_photo.jpg"

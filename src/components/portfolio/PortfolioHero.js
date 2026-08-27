@@ -35,7 +35,7 @@ export default function PortfolioHero() {
           </div>
         </div>
         <Image
-          src="/images/devolio-img1.JPG"
+          src="/images/taiyo.JPG"
           alt="Taiyo Williamson"
           width={2149}
           height={2149}
