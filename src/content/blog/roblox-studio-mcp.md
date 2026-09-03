@@ -7,7 +7,7 @@ tags:
   - meta
 draft: false
 ---
-# The Incursion
+## The Incursion
 
 This is my first post. This is really cool - I'm testing my inline-frontend text editor to write blogs from the website, instead of writing to a file on my local filesystem and then pushing to git. 
 
