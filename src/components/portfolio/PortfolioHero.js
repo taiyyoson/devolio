@@ -31,7 +31,14 @@ export default function PortfolioHero() {
               , where I built a Go tool that probes ephemeral edge-cache nodes and
               exercises their compute and observability internals. It ships as a Helm
               chart and runs in CI on a private Kubernetes cluster. That job is what really opened my eyes to infra.
-            </p>           
+            </p>       
+            <p>
+              I&apos;m currently a founding software engineer at{" "}
+              <a href="https://www.posetek.net" target="_blank" rel="noopener noreferrer" className={LINK}>
+                PoseTek 
+              </a>
+              . Still looking for my next adventure, don&apos;t hesitate to reach out!              
+              </p>    
           </div>
         </div>
         <Image
