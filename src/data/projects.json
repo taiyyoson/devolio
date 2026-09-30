@@ -77,6 +77,173 @@
     ]
   },
   {
+    "slug": "git-feed",
+    "title": "GitFeed",
+    "description": "Discovery engine (in progress): a GitHub repository feed ranked by your interests, with search that understands what you mean.",
+    "longDescription": "GitFeed is a discovery layer over GitHub. It builds an interest profile from signals you already leave behind — the repositories you star, the languages and topics you write in, the projects you contribute to — and uses it to rank a personal feed of repositories worth your attention, rather than a global trending list that looks the same for everyone. Alongside the feed is a search engine meant to be more efficient than keyword matching: repositories are indexed by embeddings of their README, topics, and metadata, so a query like \"lightweight job queue for Postgres\" can find a project that never uses those exact words. Results are then re-ranked against the same interest profile, so two people running the same search see results ordered for them.",
+    "tags": ["Python", "GitHub API", "Embeddings", "Semantic & Agentic Search", "Recommender Systems"],
+    "github": null,
+    "live": null,
+    "thumbnail": null,
+    "featured": false,
+    "context": {
+      "company": "Personal project",
+      "team": "TODO: solo or team",
+      "role": "TODO: your scope",
+      "timeline": "TODO: start – present"
+    },
+    "problem": "Finding a good repository on GitHub still depends on already knowing its name. Trending is the same list for everyone, and keyword search only works when the project's README happens to use the words you typed — so useful work in your niche stays invisible.",
+    "solution": "Model each user's interests from their own GitHub activity, then use that profile twice: to rank a personal feed of repositories, and to re-rank results from an embedding-based search index that matches on meaning rather than exact keywords.",
+    "impact": [
+      "TODO: index size, query latency, feed click-through or relevance vs. GitHub search"
+    ],
+    "diagrams": [
+      {
+        "title": "Planned architecture",
+        "caption": "Two pipelines meet at one ranker: repositories are crawled and embedded ahead of time, while the interest profile is built from the user's own GitHub activity. The feed and search share the same ranking step.",
+        "mermaid": [
+          "flowchart LR",
+          "  subgraph Ingest[\"Ingest — offline\"]",
+          "    GH[\"GitHub API\"] --> CR[\"Sync worker\"]",
+          "    CR --> MD[(\"Repo metadata store\")]",
+          "    CR --> EM[\"Embed README + topics\"]",
+          "    EM --> VX[(\"Vector index\")]",
+          "  end",
+          "  subgraph Profile[\"Profile — per user\"]",
+          "    UA[\"Stars, repos, languages\"] --> IP[\"Interest profile\"]",
+          "  end",
+          "  MD --> RK[\"Ranker\"]",
+          "  VX --> RK",
+          "  IP --> RK",
+          "  RK --> FD[\"Personal feed\"]",
+          "  RK --> SR[\"Search results\"]"
+        ]
+      },
+      {
+        "title": "Search request",
+        "caption": "Retrieval matches on meaning; re-ranking against the interest profile is what makes two users' results for the same query differ.",
+        "mermaid": [
+          "sequenceDiagram",
+          "  participant U as User",
+          "  participant A as Search API",
+          "  participant E as Embedding model",
+          "  participant V as Vector index",
+          "  participant R as Re-ranker",
+          "",
+          "  U->>A: query — lightweight job queue for Postgres",
+          "  A->>E: embed query",
+          "  E-->>A: query vector",
+          "  A->>V: nearest neighbours, top k",
+          "  V-->>A: candidate repos",
+          "  A->>R: candidates + interest profile",
+          "  R-->>A: personalised order",
+          "  A-->>U: results"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "student-crm",
+    "title": "Student CRM",
+    "description": "Standalone app (in progress): a personal CRM for students to track their network and automate staying in touch.",
+    "longDescription": "A standalone, local-first CRM for students building a professional network — a more intimate LinkedIn, where the point is the relationship rather than the connection count. Each contact carries the context that actually matters when you reach out again: where you met, what you talked about, who introduced you, and what you promised to follow up on. On top of that record sits automation for the tedious parts of networking: follow-up reminders on a cadence you set per person, drafted outreach messages that pull in the notes from your last conversation, and nudges when a relationship has gone quiet. Because it is your network and not a platform's, the data lives on your machine in a local database rather than on someone else's server.",
+    "tags": ["Desktop App", "SQLite", "Local-First", "Automation"],
+    "github": null,
+    "live": null,
+    "thumbnail": null,
+    "featured": false,
+    "context": {
+      "company": "Personal project",
+      "team": "TODO: solo or team",
+      "role": "TODO: your scope",
+      "timeline": "TODO: start – present"
+    },
+    "problem": "Students are told to network, and then left to remember everyone they met in a notes app or a spreadsheet. LinkedIn records that a connection exists but not why it matters, and the follow-ups that turn a coffee chat into a relationship are exactly the step that gets forgotten.",
+    "solution": "A private, local database of contacts built around the context of each relationship — how you met, what you discussed, what you owe them — with reminders and drafted outreach generated from that context, so staying in touch is a scheduled habit instead of an act of memory.",
+    "impact": [
+      "TODO: contacts tracked, follow-ups sent, users beyond yourself"
+    ],
+    "diagrams": [
+      {
+        "title": "Planned architecture",
+        "caption": "Everything but the outgoing message stays on the device. The scheduler and the drafter both read the same local record, so a reminder arrives with the context needed to act on it.",
+        "mermaid": [
+          "flowchart TD",
+          "  subgraph Device[\"Your machine\"]",
+          "    IM[\"Import — LinkedIn CSV, contacts, calendar\"] --> CO[\"App core\"]",
+          "    UI[\"Desktop UI\"] <--> CO",
+          "    CO <--> DB[(\"Local SQLite database\")]",
+          "    SC[\"Reminder scheduler\"] --> DB",
+          "    SC --> NT[\"OS notification\"]",
+          "    DR[\"Outreach drafter\"] --> DB",
+          "    NT --> DR",
+          "  end",
+          "  DR --> OUT[\"Draft message — email or LinkedIn\"]"
+        ]
+      },
+      {
+        "title": "Data model",
+        "caption": "The contact is the anchor; interactions hold what was said and follow-ups hold what was promised. introduced_by points back into CONTACT to record who introduced whom.",
+        "mermaid": [
+          "erDiagram",
+          "  CONTACT ||--o{ INTERACTION : has",
+          "  CONTACT ||--o{ FOLLOW_UP : owes",
+          "  CONTACT }o--o{ TAG : tagged",
+          "  CONTACT {",
+          "    int id PK",
+          "    string name",
+          "    string organization",
+          "    string met_at",
+          "    int introduced_by FK",
+          "    int cadence_days",
+          "  }",
+          "  INTERACTION {",
+          "    int id PK",
+          "    int contact_id FK",
+          "    date occurred_on",
+          "    string channel",
+          "    text notes",
+          "  }",
+          "  FOLLOW_UP {",
+          "    int id PK",
+          "    int contact_id FK",
+          "    date due_on",
+          "    string action",
+          "    bool done",
+          "  }",
+          "  TAG {",
+          "    int id PK",
+          "    string name",
+          "  }"
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "devolio",
+    "title": "devolio",
+    "description": "Personal site — This site: a terminal you can navigate like a filesystem, with a portfolio view behind it.",
+    "longDescription": "The site you are reading. It renders two front ends over one set of content: a portfolio view, and a terminal that exposes the same projects and experience as a navigable fake filesystem with tab completion and command history. Login is GitHub OAuth and lives only in the terminal — sessions are HMAC-signed cookies minted solely for the repository owner, with no session store, so rotating the secret revokes everything at once. The blog has no database: posts are markdown files in git, and the owner-gated editor commits them back through the GitHub API, so a published post is a commit that triggers a deploy. Hardened with a strict Content-Security-Policy and covered by a Playwright end-to-end suite.",
+    "tags": ["Next.js", "React", "Tailwind", "OAuth", "Playwright"],
+    "github": "https://github.com/taiyyoson/devolio",
+    "live": "https://www.taiyyoson.com/",
+    "thumbnail": null,
+    "featured": false,
+    "context": {
+      "company": "Personal project",
+      "team": "Solo",
+      "role": "Everything",
+      "timeline": "TODO: start – present"
+    },
+    "problem": "A portfolio that only describes what you can build asks the reader to take your word for it. The site itself is the first artifact anyone actually inspects.",
+    "solution": "Render two front ends over one content source — a conventional portfolio and a terminal that walks the same data as a fake filesystem — and keep the whole thing databaseless, with posts as markdown in git and sessions as HMAC-signed cookies minted only for the repo owner.",
+    "impact": [
+      "No database and no session store: rotating one secret revokes every session at once.",
+      "Publishing a post is a git commit, which triggers the deploy.",
+      "TODO: anything measured — traffic, Lighthouse, bundle size"
+    ]
+  },
+  {
     "slug": "pipelined-processor",
     "title": "Pipelined RISC-V Processor",
     "description": "Processor design — A 5-stage pipelined RISC-V CPU with automatic hazard resolution, built in a logic simulator.",
@@ -212,30 +379,6 @@
     "solution": "Tie completion to a single shared stake instead of individual scores. One virtual pet's health reflects the whole household's follow-through and visibly degrades when the chores lapse, and tasks distribute automatically by each person's capacity.",
     "impact": [
       "TODO: households using it, completion rates, whether the pet mechanic actually held attention"
-    ]
-  },
-  {
-    "slug": "devolio",
-    "title": "devolio",
-    "description": "Personal site — This site: a terminal you can navigate like a filesystem, with a portfolio view behind it.",
-    "longDescription": "The site you are reading. It renders two front ends over one set of content: a portfolio view, and a terminal that exposes the same projects and experience as a navigable fake filesystem with tab completion and command history. Login is GitHub OAuth and lives only in the terminal — sessions are HMAC-signed cookies minted solely for the repository owner, with no session store, so rotating the secret revokes everything at once. The blog has no database: posts are markdown files in git, and the owner-gated editor commits them back through the GitHub API, so a published post is a commit that triggers a deploy. Hardened with a strict Content-Security-Policy and covered by a Playwright end-to-end suite.",
-    "tags": ["Next.js", "React", "Tailwind", "OAuth", "Playwright"],
-    "github": "https://github.com/taiyyoson/devolio",
-    "live": "https://www.taiyyoson.com/",
-    "thumbnail": null,
-    "featured": false,
-    "context": {
-      "company": "Personal project",
-      "team": "Solo",
-      "role": "Everything",
-      "timeline": "TODO: start – present"
-    },
-    "problem": "A portfolio that only describes what you can build asks the reader to take your word for it. The site itself is the first artifact anyone actually inspects.",
-    "solution": "Render two front ends over one content source — a conventional portfolio and a terminal that walks the same data as a fake filesystem — and keep the whole thing databaseless, with posts as markdown in git and sessions as HMAC-signed cookies minted only for the repo owner.",
-    "impact": [
-      "No database and no session store: rotating one secret revokes every session at once.",
-      "Publishing a post is a git commit, which triggers the deploy.",
-      "TODO: anything measured — traffic, Lighthouse, bundle size"
     ]
   }
 ]
