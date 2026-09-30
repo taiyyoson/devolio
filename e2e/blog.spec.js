@@ -28,7 +28,9 @@ test.describe("Blog", () => {
     const href = await firstPostHref(page);
     test.skip(!href, "no published posts");
     await page.goto(href);
-    await expect(page.locator("article h1")).toBeVisible();
+    // Scoped to the header: a post body may contain its own `# Heading`.
+    await expect(page.locator("article header h1")).toBeVisible();
+    await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.locator("aside nav")).toBeVisible();
   });
 
