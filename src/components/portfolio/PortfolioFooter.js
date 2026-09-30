@@ -44,7 +44,7 @@ export default function PortfolioFooter() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm6 0h3.8v1.7h.05a4.16 4.16 0 0 1 3.75-2.05c4 0 4.75 2.63 4.75 6.05V21H17.4v-5.5c0-1.31-.03-3-1.83-3-1.83 0-2.11 1.43-2.11 2.91V21H9V9Z"/></svg>
           </a>
           <a
-            href="/resume.pdf"
+            href="/taiyo_williamson_SWE_resume.pdf"
             download
             className="flex items-center gap-1.5 hover:text-foreground transition-colors"
             aria-label="Download resume"
