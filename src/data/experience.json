@@ -1,5 +1,13 @@
 [
   {
+    "role": "Founding Software Engineer",
+    "company": "PoseTek",
+    "location": "San Francisco Bay Area, CA",
+    "startDate": "2026-03",
+    "description": "Developed a sports-tech platform to track biomechanics metrics geared towards youth soccer academies. Built a React/Next.js frontend with a Node.js backend and PostgreSQL database. Implemented a Python-based computer vision pipeline to analyze soccer players' biomechanics from video footage. Raised ~$80k pre-seed and contracted with clubs in the Bay Area to democratize affordable bio-tracking technology.",
+    "tags": ["Startup", "GCP", "React", "Swift", "Firebase", "Computer Vision"]
+  },
+  {
     "role": "VGL Research Assistant",
     "company": "University of San Francisco",
     "location": "San Francisco, CA",
