@@ -7,4 +7,7 @@ export const ABOUT_TEXT = `Taiyo Williamson
 
     Graduate from the University of San Francisco with a B.S./M.S. (4+1) in Computer Science.
     Interests: systems, infrastructure, cloud, AI.
+
+    Currently a founding software engineer at PoseTek (https://www.posetek.net).
+    Still looking for my next adventure, don't hesitate to reach out!
 `;
