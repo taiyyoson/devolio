@@ -23,9 +23,6 @@ const ramaraja = Ramaraja({
 });
 
 export const metadata = {
-  icons: {
-    icon: "/favicon.svg",
-  },
   title: {
     default: "devolio — Developer Portfolio",
     template: "%s — devolio",
