@@ -50,7 +50,10 @@ export default async function PostPage({ params }) {
       </header>
 
       <div className="prose prose-neutral dark:prose-invert max-w-none font-serif prose-headings:font-ramaraja prose-a:text-accent">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+        {/* The header owns the page's only h1; a `#` in the body becomes an h2. */}
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ h1: "h2" }}>
+          {post.content}
+        </ReactMarkdown>
       </div>
     </article>
   );

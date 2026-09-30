@@ -123,7 +123,10 @@ export default function PostEditor() {
         <div className="space-y-1">
           <span className="text-muted">Preview</span>
           <div className="border border-border rounded px-4 py-3 h-96 overflow-y-auto prose prose-neutral dark:prose-invert max-w-none font-serif prose-headings:font-ramaraja prose-a:text-accent">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+            {/* Matches the post page, where a body `#` renders as h2. */}
+            <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ h1: "h2" }}>
+              {content}
+            </ReactMarkdown>
           </div>
         </div>
       </div>
