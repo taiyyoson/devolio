@@ -60,3 +60,30 @@ This is harder than one thinks.
 Besides this, I'm at a startup called [PoseTek](https://posetek.net). It's two of my friends. It's got real substance, but sometimes it also bothers me because I like real structure, and learning from real engineers in a real work environemnt. This is not that. By any means. Not even close. But I feel like I'm learning(?), maybe? We do have funding too, and a board of advisors we'll turn into a board of investors when we get seeded. It's exciting, but also? I don't know shit. I want to take the time to really learn. I learn and adapt quick. So I really want to get into a real company and learn what interests me. And get paid big bucks for it. But anyway. Startup is still exciting news.
 
 I also had a LinkedIn post blow up. That was cool. I'm taking it a day at a time and gradually building my presence in EVERYTHING. That's kind of an approach I'm taking. I'll aritculate it more in a later post when I talk about what I'm also currently working on (besides the startup, cool personal stuff). Also, swearing on something that's technically public but will get 0 user traffic is kind of liberating...
+
+
+#include <iostream>
+
+int main() {
+    std::cout << R"art(
+            /"\
+           |\./|
+           |   |
+           |   |
+           |>~<|
+           |   |
+        /'\|   |/'\
+    /~\|   |   |   |__
+   |   |   }   |   |  \
+   |   |   |   |   |   \
+   | ~   ~   ~   ~ |`   )
+   |                   /
+    \                 /
+     \               /
+      \    _____    /
+       |--//''`\--|
+       | (( +==)) |
+       |--\_|_//--|
+)art" << std::endl;
+    return 0;
+}
