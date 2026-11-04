@@ -1,5 +1,12 @@
 [
   {
+    "role": "Software Engineer",
+    "company": "Northrop Grumman",
+    "startDate": "2026-11",
+    "description": "Infrastructure and distributed systems work.",
+    "tags": ["Infrastructure", "Distributed Systems"]
+  },
+  {
     "role": "Founding Software Engineer",
     "company": "PoseTek",
     "location": "San Francisco Bay Area, CA",
@@ -65,7 +72,7 @@
     "role": "M.S. Computer Science (4+1) (completed 40 credits)",
     "company": "University of San Francisco",
     "location": "San Francisco, CA",
-    "startDate": "2026-08",
+    "startDate": "2024-08",
     "endDate": "2026-05",
     "description": "GPA: 3.67. Relevant coursework: AI Foundations, ML Foundations, AI Redistricting, Algorithms, Computer Networks, Systems Foundations.",
     "tags": ["AI/ML", "Systems", "Algorithms"]

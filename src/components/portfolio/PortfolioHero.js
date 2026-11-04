@@ -33,12 +33,19 @@ export default function PortfolioHero() {
               chart and runs in CI on a private Kubernetes cluster. That job is what really opened my eyes to infra.
             </p>       
             <p>
-              I&apos;m currently a founding software engineer at{" "}
+              Most recently, I was a founding software engineer at{" "}
               <a href="https://www.posetek.net" target="_blank" rel="noopener noreferrer" className={LINK}>
                 PoseTek 
               </a>
-              . Still looking for my next adventure, don&apos;t hesitate to reach out!              
+              .            
               </p>    
+            <p>
+              Currently, I&apos;m a software engineer at{" "}
+              <a href="https://www.northropgrumman.com" target="_blank" rel="noopener noreferrer" className={LINK}>
+                Northrop Grumman
+              </a>
+              , where I do infrastructure and distributed systems work. 
+            </p>
           </div>
         </div>
         <Image

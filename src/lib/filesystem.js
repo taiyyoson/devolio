@@ -4,13 +4,15 @@ import { ABOUT_TEXT } from "@/data/about";
 import { CONTACT_TEXT } from "@/data/contact";
 
 const EXPERIENCE_SLUGS = {
+  "Software Engineer": "northrop-grumman",
+  "Founding Software Engineer": "posetek",
   "VGL Research Assistant": "research-assistant",
   "CS Tutor & Teaching Assistant": "cs-tutor",
   "Founding Executive Director": "hack4impact",
   "Embedded Software Engineering Intern": "fastly",
   "Software Developer Intern": "pacxa",
   "B.S. Computer Science": "usfca",
-  "M.S. Computer Science (4+1) (currently on LOA)": "usfca"
+  "M.S. Computer Science (4+1) (completed 40 credits)": "usfca-ms"
 };
 
 const CONTEXT_LABELS = [
@@ -57,7 +59,7 @@ function formatProject(p) {
 
 function formatExperience(e) {
   let text = `${e.role}\n${"=".repeat(e.role.length)}\n`;
-  text += `${e.company} — ${e.location}\n`;
+  text += e.location ? `${e.company} — ${e.location}\n` : `${e.company}\n`;
   const start = e.startDate || "?";
   const end = e.endDate || "Present";
   text += `${start} to ${end}\n\n`;

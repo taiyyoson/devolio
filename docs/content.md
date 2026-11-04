@@ -138,7 +138,8 @@ shows the text fields; there is no way to draw either in it.
 ## Experience — one file
 
 `src/data/experience.json`, keys: `role`, `company`, `location`, `startDate`,
-`endDate`, `description`, `tags`. Omit `endDate` to render "Present".
+`endDate`, `description`, `tags`. Omit `endDate` to render "Present". `location` is
+optional.
 
 **Trap:** `src/lib/filesystem.js` holds an `EXPERIENCE_SLUGS` map keyed by the exact
 `role` string. Rename a role in the JSON and its terminal path silently changes to
